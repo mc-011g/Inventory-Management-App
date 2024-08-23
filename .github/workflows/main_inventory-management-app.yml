@@ -13,6 +13,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    env:
+      ATLAS_URI: ${{ secrets.ATLAS_URI }}
+      DB_NAME: ${{ secrets.DB_NAME }}
+
     steps:
       - uses: actions/checkout@v4
 
@@ -60,7 +64,3 @@ jobs:
           app-name: 'inventory-management-app'
           slot-name: 'Production'
           package: '*.jar'
-          env: | 
-            ATLAS_URI=${{ secrets.ATLAS_URI }}
-            DB_NAME=${{ secrets.DB_NAME }}
-          
