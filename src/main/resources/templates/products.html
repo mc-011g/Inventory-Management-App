@@ -2,37 +2,45 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <title>Inventory - Home</title>
+    <title>Inventory - Products</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 
 <body>
-    <nav class="navbar navbar-expand bg-body-tertiary">
-        <div class="container">
-            <a class="navbar-brand fs-4" href="/home">Inventory</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
-                aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-lg-0 w-100 align-items-center justify-content-end">
-                    <div sec:authorize="hasAuthority('ADMIN')">
+    <div class="container-fluid p-0">
+        <nav class="navbar fixed-top navbar-expand bg-white">
+            <div class="container-fluid">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-lg-0 w-100 align-items-center justify-content-between">
                         <li class="nav-item">
-                            <a class="nav-link" href="/users">Users</a>
+                            <button class="btn btn-outline-secondary offcanvasSidebarToggle" type="button"
+                                data-bs-toggle="offcanvas" data-bs-target="#offcanvasSidebar"
+                                aria-controls="offcanvasSidebar" id="sidebarToggle">
+                                <i class="bi bi-list"></i>
+                            </button>
                         </li>
-                    </div>
-                    <li class="nav-item">
-                        <div class="dropdown">
-                            <a class="nav-link" href="/profile" role="button" data-bs-toggle="dropdown"
+                        </li>
+                        <div sec:authorize="hasAuthority('ADMIN')">
+                            <li class="nav-item">
+                                <a class="nav-link" href="/users">Users</a>
+                            </li>
+                        </div>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown"
                                 aria-expanded="false">
                                 <i class="bi bi-person-circle fs-4"></i>
                             </a>
-                            <ul class="dropdown-menu">
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
                                 <li><a class="dropdown-item" href="/profile">Profile</a></li>
                                 <li>
                                     <form th:action="@{/logout}" method="post">
@@ -40,90 +48,145 @@
                                     </form>
                                 </li>
                             </ul>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-
-    <div class="container">
-        <div class="my-4">
-            <h2
-                th:text="${searchResults} ? ('Search results for ' + ${searchQuery} + ' (' + ${searchResults.size()} + ')') : ('Products' + ' (' + ${products.size()} + ')')">
-            </h2>
-            <div class="d-flex justify-content-between gap-3 align-items-center">
-                <div>
-                    <label class="d-flex align-items-center my-3">
-                        Search:
-                        <form th:action="@{/home}" method="post" class="d-flex">
-                            <input type="text" class="ms-2 form-control" name="searchQuery" id="searchQuery">
-                            <button type="submit" class="btn btn-primary ms-2" name="searchProducts">
-                                <i class="bi bi-search"></i>
-                            </button>
-                        </form>
-                    </label>
+                        </li>
+                    </ul>
                 </div>
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addProductModal"
-                    name="addProductBtn" id="addProductBtn">
-                    Create Product
-                </button>
             </div>
-            <div class="table-responsive">
-                <table class="table table-hover table-sm">
-                    <thead>
-                        <tr>
-                            <th scope="col">ID</th>
-                            <th scope="col">Name</th>
-                            <th scope="col">Price</th>
-                            <th scope="col">Category</th>
-                            <th scope="col">Quantity</th>
-                            <th scope="col">SKU</th>
-                            <th scope="col">Dated Added</th>
-                            <th scope="col">Last Updated</th>
-                            <th scope="col"></th>
-                            <th scope="col"></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr th:each="product : ${searchResults == null ? products : searchResults }">
-                            <td>
-                                <span th:text="${product.id}"></span>
-                            </td>
-                            <td>
-                                <span th:text="${product.name}"></span>
-                            </td>
-                            <td>
-                                <span th:text="${product.price}"></span>
-                            </td>
-                            <td>
-                                <span th:text="${product.category}"></span>
-                            </td>
-                            <td>
-                                <span th:text="${product.quantity}"></span>
-                            </td>
-                            <td>
-                                <span th:text="${product.SKU}"></span>
-                            </td>
-                            <td>
-                                <span th:text="${product.createdAt}"></span>
-                            </td>
-                            <td>
-                                <span th:text="${product.updatedAt}"></span>
-                            </td>
-                            <td>
-                                <button type="button" class="btn btn-primary"
-                                    th:onclick="getProduct([[${product}]], [[${product.id.toString()}]])"
-                                    data-bs-toggle="modal" data-bs-target="#editProductModal">Edit</button>
-                            </td>
-                            <td>
-                                <button type="button" class="btn btn-danger" data-bs-toggle="modal"
-                                    th:onclick="getProductId([[${product.id.toString()}]])"
-                                    data-bs-target="#deleteProductModal">Delete</button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+        </nav>
+
+        <!-- Offcanvas sidebar -->
+        <div class="sidebar offcanvasSidebar p-4 offcanvas offcanvas-start" tabindex="-1" id="offcanvasSidebar"
+            aria-labelledby="offcanvasSidebarLabel">
+            <div class="offcanvas-header">
+                <button type="button" class="btn-close text-white" data-bs-dismiss="offcanvas"
+                    aria-label="Close"></button>
+            </div>
+            <a class="navbar-brand fs-2 text-white" href="/dashboard">Inventory</a>
+            <ul class="offcanvas-body navbar-nav pt-3 ps-0">
+                <li class="nav-item">
+                    <i class="bi bi-grid"></i>
+                    <a class="nav-link" href="/dashboard">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <i class="bi bi-box"></i>
+                    <a class="nav-link" href="/products">Products</a>
+                </li>
+                <li class="nav-item">
+                    <i class="bi bi-cart"></i>
+                    <a class="nav-link" href="/orders">Orders</a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Main sidebar -->
+        <div class="sidebar p-4">
+            <a class="navbar-brand fs-2 text-white" href="/dashboard">Inventory</a>
+            <ul class="navbar-nav pt-3">
+                <li class="nav-item">
+                    <i class="bi bi-grid"></i>
+                    <a class="nav-link" href="/dashboard">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <i class="bi bi-box"></i>
+                    <a class="nav-link" href="/products">Products</a>
+                </li>
+                <li class="nav-item">
+                    <i class="bi bi-cart"></i>
+                    <a class="nav-link" href="/orders">Orders</a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="main-content">
+            <div class="content flex-grow-1 p-4 bg-body-tertiary">
+                <h2 class="pb-3"
+                    th:text="${searchResults} ? ('Search results for ' + ${searchQuery} + ' (' + ${searchResults.size()} + ')') : ('Products' + ' (' + ${products.size()} + ')')">
+                </h2>
+                <div class="products-content bg-white rounded-4 p-4">
+                    <div class="d-flex justify-content-between gap-3 align-items-center">
+                        <div>
+                            <label class="d-flex align-items-center my-3">
+                                Search by name:
+                                <form th:action="@{/products}" method="post" class="d-flex">
+                                    <input type="text" class="ms-2 form-control" name="searchQuery" id="searchQuery">
+                                    <button type="submit" class="btn btn-primary ms-2" name="searchProducts">
+                                        <i class="bi bi-search"></i>
+                                    </button>
+                                </form>
+                            </label>
+                        </div>
+                        <button type="button" class="btn btn-primary addButton" data-bs-toggle="modal"
+                            data-bs-target="#addProductModal" name="addProductBtn" id="addProductBtn">
+                            Create Product
+                            <i class="bi bi-plus fs-2"></i>
+                        </button>
+                    </div>
+                    <div th:if="${products.size() > 0}" class="table-responsive">
+                        <table class="table table-hover table-sm">
+                            <thead>
+                                <tr>
+                                    <th scope="col">ID</th>
+                                    <th scope="col">Image</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Price</th>
+                                    <th scope="col">Category</th>
+                                    <th scope="col">Quantity</th>
+                                    <th scope="col">SKU</th>
+                                    <th scope="col">Dated Added</th>
+                                    <th scope="col">Last Updated</th>
+                                    <th scope="col"></th>
+                                    <th scope="col"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="product : ${searchResults == null ? products : searchResults }">
+                                    <td>
+                                        <span th:text="${product.id}"></span>
+                                    </td>
+                                    <td>
+                                        <div class="orderProductImage">
+                                            <i class="bi bi-image d-flex orderProductIcon"></i>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span th:text="${product.name}"></span>
+                                    </td>
+                                    <td>
+                                        <span th:text="'$' + ${product.price}"></span>
+                                    </td>
+                                    <td>
+                                        <span th:text="${product.category}"></span>
+                                    </td>
+                                    <td>
+                                        <span th:text="${product.quantity}"></span>
+                                    </td>
+                                    <td>
+                                        <span th:text="${product.SKU}"></span>
+                                    </td>
+                                    <td>
+                                        <span th:text="${product.createdAt}"></span>
+                                    </td>
+                                    <td>
+                                        <span th:text="${product.updatedAt}"></span>
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-outline-primary"
+                                            th:onclick="getProduct([[${product}]], [[${product.id.toString()}]])"
+                                            data-bs-toggle="modal" data-bs-target="#editProductModal">Edit</button>
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal"
+                                            th:onclick="getProductId([[${product.id.toString()}]])"
+                                            data-bs-target="#deleteProductModal">Delete</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div th:if="${products.size() == 0}" class="text-center align-content-center h-100">
+                        <h3 class="text-secondary">No products found.</h3>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -147,46 +210,44 @@
                         <h1 class="modal-title fs-5" id="addProductModalLabel">Create Product</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-
-                    <form th:action="@{/home}" th:object="${newProduct}" method="post">
+                    <form th:action="@{/products}" th:object="${newProduct}" method="post">
                         <div class="modal-body d-flex flex-column gap-3">
                             <div class="form-group">
                                 <label for="newProductName">Name</label>
                                 <input type="text" class="form-control" name="newProductName" th:field="*{name}"
                                     id="newProductName" required>
-                                <div class="text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">
-                                    Name Error</div>
+                                <div class="text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name
+                                    Error</div>
                             </div>
                             <div class="form-group">
                                 <label for="newProductPrice">Price</label>
-                                <input type="number" step="0.01" class="form-control" name="newProductPrice"
+                                <input type="number" step="1" class="form-control" name="newProductPrice"
                                     th:field="*{price}" id="newProductPrice" required>
                                 <div class="text-danger" th:if="${#fields.hasErrors('price')}" th:errors="*{price}">
-                                    Price Error</div>
+                                    Price Error
+                                </div>
                             </div>
                             <div class="form-group">
                                 <label for="newProductCategory">Category</label>
                                 <input type="text" class="form-control" name="newProductCategory" th:field="*{category}"
                                     id="newProductCategory" required>
                                 <div class="text-danger" th:if="${#fields.hasErrors('category')}"
-                                    th:errors="*{category}">
-                                    Category Error</div>
+                                    th:errors="*{category}">Category Error</div>
                             </div>
                             <div class="form-group">
-                                <label for="newProductQuantity">
+                                <label for="newProductQuantity" class="w-100">
                                     Quantity
                                     <input type="number" class="form-control" name="newProductQuantity"
                                         th:field="*{quantity}" id="newProductQuantity" required>
                                     <div class="text-danger" th:if="${#fields.hasErrors('quantity')}"
-                                        th:errors="*{quantity}">
-                                        Quantity Error</div>
+                                        th:errors="*{quantity}">Quantity Error</div>
                             </div>
                             <div class="form-group">
                                 <label for="newProductSKU">SKU</label>
                                 <input type="text" class="form-control" name="newProductSKU" th:field="*{SKU}"
                                     id="newProductSKU" required>
-                                <div class="text-danger" th:if="${#fields.hasErrors('SKU')}" th:errors="*{SKU}">
-                                    SKU Error</div>
+                                <div class="text-danger" th:if="${#fields.hasErrors('SKU')}" th:errors="*{SKU}">SKU
+                                    Error</div>
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -207,9 +268,13 @@
                         <h1 class="modal-title fs-5" id="editProductModalLabel">Edit Product</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
+
                     <form th:action="@{/editProduct}" th:object="${editedProduct}" method="post">
                         <div class="modal-body d-flex flex-column gap-3">
                             <input type="hidden" th:field="*{id}" id="editProductId" />
+                            <input type="hidden" th:field="*{userId}" id="editProductUserId" />
+                            <input type="hidden" th:field="*{images}" id="editProductImages" />
+                            <input type="hidden" th:field="*{createdAt}" id="editProductCreatedAt" />
                             <div class="form-group">
                                 <label for="editProductName">Name</label>
                                 <input type="text" class="form-control" name="editProductName" id="editProductName"
@@ -219,10 +284,11 @@
                             </div>
                             <div class="form-group">
                                 <label for="editProductPrice">Price</label>
-                                <input type="number" step="0.01" class="form-control" name="editProductPrice"
+                                <input type="number" step="1" class="form-control" name="editProductPrice"
                                     id="editProductPrice" th:field="*{price}" required>
                                 <div class="text-danger" th:if="${#fields.hasErrors('price')}" th:errors="*{price}">
-                                    Price Error</div>
+                                    Price
+                                    Error</div>
                             </div>
                             <div class="form-group">
                                 <label for="editProductCategory">Category</label>
@@ -233,7 +299,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="editProductQuantity">Quantity</label>
-                                <input type="text" class="form-control" name="editProductQuantity"
+                                <input type="number" class="form-control" name="editProductQuantity"
                                     id="editProductQuantity" th:field="*{quantity}" required>
                                 <div class="text-danger" th:if="${#fields.hasErrors('quantity')}"
                                     th:errors="*{quantity}">Price Error</div>
@@ -265,7 +331,7 @@
                         <h1 class="modal-title fs-5" id="editProductModalLabel">Delete Product</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <form th:action="@{/home}" method="post">
+                    <form th:action="@{/products}" method="post">
                         <div class="modal-body d-flex flex-column gap-3">
                             Are you sure you want to delete this product?
                             <input hidden name="deleteProductId" id="deleteProductId">
@@ -282,8 +348,8 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-        crossorigin="anonymous"></script>
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
+        </script>
     <script type="text/javascript" th:src="@{/js/script.js}"></script>
 
     <script th:inline="javascript">
@@ -311,7 +377,7 @@
                     break;
             }
             toastBootstrap.show()
-        }    
+        }
     </script>
 </body>
 

@@ -1,13 +1,9 @@
 package com.example.inventoryapp.model;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.bson.types.ObjectId;
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -19,7 +15,7 @@ public class Product {
 
     @Id
     @Field("_id")
-    private ObjectId id;
+    private String id;
 
     private String name;
 
@@ -36,15 +32,13 @@ public class Product {
 
     private String SKU;
 
-    private ObjectId userId;
+    private String userId;
 
-    @CreatedDate
-    private Date createdAt;
+    private String createdAt;
 
-    @LastModifiedDate
-    private Date updatedAt;
+    private String updatedAt;
 
-    public Product(ObjectId id, String name, double price,
+    public Product(String id, String name, double price,
             String category, int quantity, String SKU, List<String> images,
             List<Map<String, String>> attributes) {
         this.id = id;
@@ -58,11 +52,11 @@ public class Product {
     public Product() {
     }
 
-    public ObjectId getId() {
+    public String getId() {
         return id;
     }
 
-    public ObjectId getUserId() {
+    public String getUserId() {
         return userId;
     }
 
@@ -86,7 +80,7 @@ public class Product {
         return SKU;
     }
 
-    public Date getUpdatedAt() {
+    public String getUpdatedAt() {
         return updatedAt;
     }
 
@@ -94,7 +88,7 @@ public class Product {
         return attributes;
     }
 
-    public Date getCreatedAt() {
+    public String getCreatedAt() {
         return createdAt;
     }
 
@@ -102,7 +96,7 @@ public class Product {
         return images;
     }
 
-    public void setUserId(ObjectId userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 
@@ -110,7 +104,7 @@ public class Product {
         this.category = category;
     }
 
-    public void setId(ObjectId id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -130,7 +124,7 @@ public class Product {
         this.attributes = attributes;
     }
 
-    public void setCreatedAt(Date createdAt) {
+    public void setCreatedAt(String createdAt) {
         this.createdAt = createdAt;
     }
 
@@ -142,7 +136,7 @@ public class Product {
         this.SKU = SKU;
     }
 
-    public void setUpdatedAt(Date updatedAt) {
+    public void setUpdatedAt(String updatedAt) {
         this.updatedAt = updatedAt;
     }
 

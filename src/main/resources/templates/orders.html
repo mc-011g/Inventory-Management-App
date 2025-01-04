@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Inventory - Orders</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+    <div class="container-fluid p-0">
+        <nav class="navbar fixed-top navbar-expand bg-white">
+            <div class="container-fluid">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-lg-0 w-100 align-items-center justify-content-between">
+                        <li class="nav-item">
+                            <button class="btn btn-outline-secondary offcanvasSidebarToggle" type="button"
+                                data-bs-toggle="offcanvas" data-bs-target="#offcanvasSidebar"
+                                aria-controls="offcanvasSidebar" id="sidebarToggle">
+                                <i class="bi bi-list"></i>
+                            </button>
+                        </li>
+                        </li>
+                        <div sec:authorize="hasAuthority('ADMIN')">
+                            <li class="nav-item">
+                                <a class="nav-link" href="/users">Users</a>
+                            </li>
+                        </div>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                                <i class="bi bi-person-circle fs-4"></i>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
+                                <li><a class="dropdown-item" href="/profile">Profile</a></li>
+                                <li>
+                                    <form th:action="@{/logout}" method="post">
+                                        <input type="submit" class="dropdown-item" value="Logout">
+                                    </form>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Offcanvas sidebar -->
+        <div class="sidebar offcanvasSidebar p-4 offcanvas offcanvas-start" tabindex="-1" id="offcanvasSidebar"
+            aria-labelledby="offcanvasSidebarLabel">
+
+            <div class="offcanvas-header">
+                <button type="button" class="btn-close text-white" data-bs-dismiss="offcanvas"
+                    aria-label="Close"></button>
+            </div>
+
+            <a class="navbar-brand fs-2 text-white" href="/dashboard">Inventory</a>
+
+            <ul class="offcanvas-body navbar-nav pt-3">
+                <li class="nav-item">
+                    <i class="bi bi-grid"></i>
+                    <a class="nav-link" href="/dashboard">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <i class="bi bi-box"></i>
+                    <a class="nav-link" href="/products">Products</a>
+                </li>
+                <li class="nav-item">
+                    <i class="bi bi-cart"></i>
+                    <a class="nav-link" href="/orders">Orders</a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Main sidebar -->
+        <div class="sidebar p-4">
+            <a class="navbar-brand fs-2 text-white" href="/dashboard">Inventory</a>
+
+            <ul class="navbar-nav pt-3">
+                <li class="nav-item">
+                    <i class="bi bi-grid"></i>
+                    <a class="nav-link" href="/dashboard">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <i class="bi bi-box"></i>
+                    <a class="nav-link" href="/products">Products</a>
+                </li>
+                <li class="nav-item">
+                    <i class="bi bi-cart"></i>
+                    <a class="nav-link" href="/orders">Orders</a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="main-content">
+            <div class="content flex-grow-1 p-4 bg-body-tertiary">
+                <h2 class="pb-3"
+                    th:text="${searchResults} ? ('Search results for ' + ${searchQuery} + ' (' + ${searchResults.size()} + ')') : ('Orders' + ' (' + ${orders.size()} + ')')">
+                </h2>
+                <div class="orders-content bg-white rounded-4 p-4">
+                    <div class="d-flex justify-content-between gap-3 align-items-center">
+                        <div>
+                            <label class="d-flex align-items-center my-3">
+                                Search by id:
+                                <form th:action="@{/orders}" method="post" class="d-flex">
+                                    <input type="text" class="ms-2 form-control" name="searchQuery" id="searchQuery">
+                                    <button type="submit" class="btn btn-primary ms-2" name="searchOrders">
+                                        <i class="bi bi-search"></i>
+                                    </button>
+                                </form>
+                            </label>
+                        </div>
+                        <button type="button" class="btn btn-primary addButton" data-bs-toggle="modal"
+                            data-bs-target="#addOrderModal" name="addOrderBtn" id="addOrderBtn">
+                            Create Order
+                            <i class="bi bi-plus fs-2"></i>
+                        </button>
+                    </div>
+                    <div th:if="${orders.size() > 0}" class="table-responsive">
+                        <table class="table table-hover table-sm">
+                            <thead>
+                                <tr>
+                                    <th scope="col">ID</th>
+                                    <th scope="col">Customer Name</th>
+                                    <th scope="col">Customer Email</th>
+                                    <th scope="col">Customer Phone</th>
+                                    <th scope="col">Customer Address</th>
+                                    <th scope="col">Total Price</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">Products</th>
+                                    <th scope="col">Notes</th>
+                                    <th scope="col">Created</th>
+                                    <th scope="col">Updated</th>
+                                    <th scope="col">Actions</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+
+                                <tr th:each="order : ${searchResults == null ? orders : searchResults }">
+                                    <td>
+                                        <span th:text="${order.id}"></span>
+                                    </td>
+                                    <td>
+                                        <span th:text="${order.customerName}"></span>
+                                    </td>
+                                    <td>
+                                        <span th:text="${order.customerEmail}"></span>
+                                    </td>
+                                    <td>
+                                        <span th:text="${order.customerPhone}"></span>
+                                    </td>
+                                    <td>
+                                        <span th:text="${order.customerAddress}"></span>
+                                    </td>
+                                    <td>
+                                        <span th:text="${' $' + order.totalPrice}"></span>
+                                    </td>
+                                    <td>
+                                        <span th:text="${order.status}"></span>
+                                    </td>
+                                    <td>
+                                        <div th:each="orderItem, iterStat : ${order.orderItems}" class="">
+                                            <div class="d-flex justify-content-between mb-1">
+                                                <div class="d-flex flex-row">
+                                                    <div class="orderProductImage">
+                                                        <i class="bi bi-image d-flex orderProductIcon"></i>                                                
+                                                    </div>
+                                                    <div class="ms-2 me-5" style="min-width: 100px;">
+                                                        <div th:text="${orderItem.product.name}" class=""
+                                                            id="orderItemName"></div>
+                                                        <div th:text="'Qty: ' + ${orderItem.quantity}"
+                                                            id="orderItemQuantity"></div>
+                                                    </div>
+                                                    <span class="" th:text="'$' + ${orderItem.product.price}"></span>
+                                                </div>
+                                            </div>
+                                    </td>
+                                    <td>
+                                        <span th:text="${order.notes}"></span>
+                                    </td>
+                                    <td>
+                                        <span th:text="${order.createdAt}"></span>
+                                    </td>
+                                    <td>
+                                        <span th:text="${order.updatedAt}"></span>
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-outline-primary" th:onclick="                                        
+                                            getOrder([[${order}]])" data-bs-toggle="modal"
+                                            data-bs-target="#editOrderModal">Edit</button>
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal"
+                                            th:onclick="getOrderId([[${order.id.toString()}]])"
+                                            data-bs-target="#deleteOrderModal">Delete</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div th:if="${orders.size() == 0}" class="text-center h-100 align-content-center">
+                        <h3 class="text-secondary">No orders found.</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toast -->
+        <div class="toast-container position-fixed bottom-0 end-0 p-3">
+            <div id="liveToast" class="toast align-items-center" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="d-flex">
+                    <div class="toast-body" id="toast-message"></div>
+                    <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close">
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Order Modal -->
+        <div class="modal fade" id="addOrderModal" tabindex="-1" aria-labelledby="addOrderModalLabel" aria-hidden="true"
+            th:classappend="${showAddModal} ? 'show' : ''">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="addOrderModalLabel">Create Order</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form th:action="@{/orders}" th:object="${newOrder}" method="post">
+                        <div class="modal-body d-flex flex-column gap-3">
+                            <div class="form-group">
+                                <label for="newOrderCustomerName">Customer Name</label>
+                                <input type="text" class="form-control" name="newOrderCustomerName"
+                                    th:field="*{customerName}" id="newOrderCustomerName" required>
+                                <div class="text-danger" th:if="${#fields.hasErrors('customerName')}"
+                                    th:errors="*{customerName}">Customer Name
+                                    Error</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="newOrderCustomerEmail">Customer Email</label>
+                                <input type="email" class="form-control" name="newOrderCustomerEmail"
+                                    th:field="*{customerEmail}" id="newOrderCustomerEmail" required>
+                                <div class="text-danger" th:if="${#fields.hasErrors('customerEmail')}"
+                                    th:errors="*{customerEmail}">Customer Email
+                                    Error</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="newOrderCustomerPhone">Customer Phone</label>
+                                <input type="tel" class="form-control" name="newOrderCustomerPhone"
+                                    th:field="*{customerPhone}" id="newOrderCustomerPhone" required>
+                                <div class="text-danger" th:if="${#fields.hasErrors('customerPhone')}"
+                                    th:errors="*{customerPhone}">Customer Phone
+                                    Error</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="newOrderCustomerAddress">Customer Address</label>
+                                <input type="text" class="form-control" name="newOrderCustomerAddress"
+                                    th:field="*{customerAddress}" id="newOrderCustomerAddress" required>
+                                <div class="text-danger" th:if="${#fields.hasErrors('customerAddress')}"
+                                    th:errors="*{customerAddress}">Customer Address
+                                    Error</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="newOrderTotalPrice">Notes</label>
+                                <input type="text" class="form-control" name="newOrderNotes" th:field="*{notes}"
+                                    id="newOrderNotes">
+                            </div>
+                            <div class="form-group">
+                                <label for="newOrderProducts" class="mb-2">Select Products</label>
+                                <div class="form-group">                       
+                                    <div th:each="product, iterStat : ${products}"
+                                        class="d-flex justify-content-between mb-1">
+                                        <div class="form-check flex-grow-1">
+                                            <input class="form-check-input" type="checkbox"
+                                                th:field="*{orderItems[__${iterStat.index}__].selected}"
+                                                th:value="${product.id}" id="productCheckboxAddOrder"
+                                                th:id="'productCheckboxAddOrder' + ${product.id}"
+                                                onchange="updateTotalPrice('createOrder')">
+                                            <div class="d-flex flex-row justify-content-between">
+                                                <div class="d-flex">
+                                                    <div class="orderProductImage">
+                                                        <i class="bi bi-image d-flex orderProductIcon"></i>
+                                                    </div>
+                                                    <div class="ms-2 me-5">
+                                                        <div class="" th:text="${product.name}">
+                                                        </div>
+                                                        <div class="form-group d-flex">
+                                                            <label for="addQuantity">Qty:</label>
+                                                            <input type="number"
+                                                                class="ms-1 form-control orderProductQuantity"
+                                                                th:field="*{orderItems[__${iterStat.index}__].quantity}"
+                                                                th:id="'addQuantity' + ${product.id}" step="1" min="0"
+                                                                onchange="updateTotalPrice('createOrder')" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <span class="" th:text="'$' + ${product.price}"></span>
+                                            </div>
+                                        </div>
+                                        <input type="hidden" th:field="*{orderItems[__${iterStat.index}__].product.id}"
+                                            th:value="${product.id}">
+                                        <input type="hidden"
+                                            th:field="*{orderItems[__${iterStat.index}__].product.price}"
+                                            th:id="'hiddenPriceAddOrder' + ${product.id}" th:value="${product.price}">
+                                    </div>
+                                    <div class="text-danger" th:if="${#fields.hasErrors('orderItems')}"
+                                        th:errors="*{orderItems}">Products Error</div>
+                                </div>
+                            </div>
+
+                            <div class="form-group d-flex fw-bold">
+                                Total Price:
+                                <span class="ms-1" id="totalPriceSpanCreateOrder">$0.00</span>
+                            </div>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary" name="createOrder">Create</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Edit Order Modal -->
+        <div class="modal fade" id="editOrderModal" tabindex="-1" aria-labelledby="editOrderModalLabel"
+            aria-hidden="true" th:classappend="${showEditModal} ? 'show' : ''">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="editOrderModalLabel">Edit Order</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+
+                    <form id="editOrderForm" th:action="@{/editOrder}" th:object="${editedOrder}" method="post">
+                        <div class="modal-body d-flex flex-column gap-3">
+                            <input type="hidden" th:field="*{id}" id="editOrderId" />
+                            <div class="form-group">
+                                <label for="editOrderCustomerName">Customer Name</label>
+                                <input type="text" class="form-control" name="editOrderCustomerName"
+                                    id="editOrderCustomerName" th:field="*{customerName}" required>
+                                <div class="text-danger" th:if="${#fields.hasErrors('customerName')}"
+                                    th:errors="*{customerName}">Customer Name
+                                    Error</div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="editOrderCustomerEmail">Customer Email</label>
+                                <input type="email" class="form-control" name="editOrderCustomerEmail"
+                                    id="editOrderCustomerEmail" th:field="*{customerEmail}" required>
+                                <div class="text-danger" th:if="${#fields.hasErrors('customerEmail')}"
+                                    th:errors="*{customerEmail}">Customer Email</div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="editOrderCustomerPhone">Customer Phone</label>
+                                <input type="tel" class="form-control" name="editOrderCustomerPhone"
+                                    id="editOrderCustomerPhone" th:field="*{customerPhone}" required>
+                                <div class="text-danger" th:if="${#fields.hasErrors('customerPhone')}"
+                                    th:errors="*{customerPhone}">Customer Phone Error</div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="editOrderCustomerAddress">Customer Address</label>
+                                <input type="text" class="form-control" name="editOrderCustomerAddress"
+                                    id="editOrderCustomerAddress" th:field="*{customerAddress}" required>
+                                <div class="text-danger" th:if="${#fields.hasErrors('customerAddress')}"
+                                    th:errors="*{customerEmail}">Price Error</div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="editOrderNotes">Notes</label>
+                                <input type="text" class="form-control" name="editOrderNotes" id="editOrderNotes"
+                                    th:field="*{notes}">
+                                <div class="text-danger" th:if="${#fields.hasErrors('notes')}" th:errors="*{notes}">
+                                    Notes
+                                    Error
+                                </div>
+                            </div>
+
+                            <!-- Order Items Container -->
+                            <div class="form-group">
+                                <label for="editOrderProducts">Order Items</label>
+                                <div id="editOrderProducts" class="mt-2"></div>
+                                <div class="form-group d-flex fw-bold">
+                                    Total Price:
+                                    <span class="ms-1" id="totalPriceSpanEditOrder">
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary" name="editOrder"
+                                id="saveChangesButton">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Delete Order Modal -->
+        <div class="modal fade" id="deleteOrderModal" tabindex="-1" aria-labelledby="deleteOrderModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="deleteOrderModalLabel">Delete Order</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form th:action="@{/orders}" method="post">
+                        <div class="modal-body d-flex flex-column gap-3">
+                            Are you sure you want to delete this order?
+                            <input hidden name="deleteOrderId" id="deleteOrderId">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-danger" name="deleteOrder">Delete</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
+        </script>
+    <script type="text/javascript" th:src="@{/js/script.js}"></script>
+
+    <script th:inline="javascript">
+        const toastTrigger = document.getElementById('liveToastBtn');
+        const toastLiveExample = document.getElementById('liveToast');
+        const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample);
+        const toastMessage = document.getElementById("toast-message");
+
+        let action = /*[[${message}]]*/ '';
+        if (action !== null) {
+            switch (action) {
+                case 'addOrder':
+                    toastMessage.innerText = "Added new order.";
+                    break;
+                case 'editOrder':
+                    toastMessage.innerText = "Saved order changes.";
+                    break;
+                case 'deleteOrder':
+                    toastMessage.innerText = "Deleted order.";
+                    break;
+                case 'existingOrder':
+                    toastMessage.innerText = "Order already exists.";
+                    break;
+                default:
+                    break;
+            }
+            toastBootstrap.show()
+        }
+    </script>
+</body>
+
+</html>

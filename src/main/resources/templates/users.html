@@ -123,7 +123,6 @@
                         <h1 class="modal-title fs-5" id="addUserModalLabel">Create User</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-
                     <form th:action="@{/users/create}" th:object="${user}" method="post">
                         <div class="modal-body d-flex flex-column gap-3">
                             <div class="form-group">
@@ -160,7 +159,6 @@
                             <button type="submit" class="btn btn-primary">Create</button>
                         </div>
                     </form>
-
                 </div>
             </div>
         </div>

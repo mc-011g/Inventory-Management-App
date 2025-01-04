@@ -3,7 +3,6 @@ package com.example.inventoryapp.model;
 import java.util.Collection;
 import java.util.Set;
 
-import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -18,7 +17,7 @@ import jakarta.validation.constraints.Size;
 public class User implements UserDetails {
     @Id
     @Field("_id")
-    private ObjectId id;
+    private String id;
 
     @NotEmpty(message = "Email cannot be empty")
     @Email(message = "Email should be valid")
@@ -40,8 +39,8 @@ public class User implements UserDetails {
         this.userAuthorities = grantedAuthorities;
     }
 
-    public User(String email, String password, String role) {
-        this.id = new ObjectId();
+    public User(String id, String email, String password, String role) {
+        this.id = id;
         this.email = email;
         this.password = password;
         this.role = role;
@@ -69,11 +68,11 @@ public class User implements UserDetails {
         return email;
     }
 
-    public ObjectId getId() {
+    public String getId() {
         return id;
     }
 
-    public void set_id(ObjectId id) {
+    public void set_id(String id) {
         this.id = id;
     }
 

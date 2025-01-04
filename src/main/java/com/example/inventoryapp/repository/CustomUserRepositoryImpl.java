@@ -1,6 +1,5 @@
 package com.example.inventoryapp.repository;
 
-import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -34,7 +33,7 @@ public class CustomUserRepositoryImpl implements CustomUserRepository {
     }
 
     @Override
-    public void updateUserDetails(ObjectId id, String email, String role, String newPassword) {
+    public void updateUserDetails(String id, String email, String role, String newPassword) {
         Query query = new Query(Criteria.where("id").is(id));
         System.out.println("QUERY:" + query);
 

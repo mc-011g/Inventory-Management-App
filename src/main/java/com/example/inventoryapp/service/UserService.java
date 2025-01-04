@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
-import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -29,16 +28,17 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public Optional<User> getUser(ObjectId id) {
+    public Optional<User> getUser(String id) {
         return userRepository.findById(id);
     }
 
-    public User getUser(String email) {
+    public User getUserByEmail(String email) {
         return userRepository.findUserByEmail(email);
     }
 
-    public void registerNewUser(String email, String password, String role) {
+    public void registerNewUser(String id, String email, String password, String role) {
         userRepository.save(new User(
+                id,
                 email,
                 passwordEncoder.encode(password),
                 role));
@@ -48,7 +48,7 @@ public class UserService {
         customUserRepository.updateUserPassword(email, password);
     }
 
-    public void updateUserInformation(ObjectId id, String email, String role, String newPassword) {
+    public void updateUserInformation(String id, String email, String role, String newPassword) {
         customUserRepository.updateUserDetails(id, email, role, newPassword);
     }
 
@@ -62,7 +62,7 @@ public class UserService {
         return pattern.matcher(email).matches();
     }
 
-    public void deleteUser(ObjectId id) {
+    public void deleteUser(String id) {
         userRepository.deleteById(id);
     }
 

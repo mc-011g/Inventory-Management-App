@@ -1,6 +1,7 @@
 package com.example.inventoryapp.repository;
 
-import org.bson.types.ObjectId;
+import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -29,9 +30,9 @@ public class CustomItemRepositoryImpl implements CustomItemRepository {
     }
 
     @Override
-    public void updateProductDetails(ObjectId _id, String newName, String newCategory, double newPrice, int newQuantity,
+    public void updateProductDetails(String id, String newName, String newCategory, double newPrice, int newQuantity,
             String newSKU) {
-        Query query = new Query(Criteria.where("_id").is(_id));
+        Query query = new Query(Criteria.where("id").is(id));
 
         Update update = new Update();
         update.set("price", newPrice);
@@ -39,6 +40,7 @@ public class CustomItemRepositoryImpl implements CustomItemRepository {
         update.set("category", newCategory);
         update.set("quantity", newQuantity);
         update.set("SKU", newSKU);
+        update.set("updatedAt", new Date().toString());
         UpdateResult result = mongoTemplate.updateFirst(query, update, Product.class);
 
         System.out.println(result.getModifiedCount() + " documents(s) updated..");
