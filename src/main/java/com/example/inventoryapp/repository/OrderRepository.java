@@ -18,5 +18,7 @@ public interface OrderRepository extends MongoRepository<Order, String> {
 
     List<Order> findOrdersByUserId(String userId);
 
+    List<Order> findByStatus(String status);
+
     public long count();
 }

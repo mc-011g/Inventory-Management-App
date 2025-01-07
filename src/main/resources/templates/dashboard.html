@@ -132,8 +132,9 @@
                             class="dashboard-section d-flex flex-grow-1 justify-content-between gap-3 align-items-center">
                             <div>
                                 <div class="text-secondary mb-1">Low Stock Products</div>
-                                <ul th:if="${lowStockProducts.size() > 0}" th:each="product : ${lowStockProducts}">
-                                    <li th:text="${product.name + ', Qty: ' + product.quantity}">
+                                <ul th:if="${lowStockProducts.size() > 0}">
+                                    <li th:each="product : ${lowStockProducts}">
+                                        <span th:text="${product.name + ', Qty: ' + product.quantity}"></span>
                                     </li>
                                 </ul>
                                 <div th:if="${lowStockProducts.size() == 0}">

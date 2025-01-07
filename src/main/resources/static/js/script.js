@@ -35,9 +35,9 @@ const getOrder = (selectedOrder) => {
         const itemDiv = document.createElement("div");
         itemDiv.classList.add('form-group', 'd-flex', 'justify-content-between', 'mb-1');
         itemDiv.innerHTML = `
-
+        
         <div class="form-check flex-grow-1">
-            <input class="form-check-input" type="checkbox" name="orderItems[${index}].selected" value="${orderItem.selected}" id="productCheckboxEditOrder${orderItem.product.id}" ${orderItem.selected ? 'checked' : ''} onchange="updateTotalPrice('editOrder')">
+            <input class="form-check-input" type="checkbox" name="orderItems[${index}].selected" value="${orderItem.selected}" id="productCheckboxEditOrder${orderItem.product.id}" ${orderItem.selected ? 'checked' : ''} ${selectedOrder.status === 'Pending' ? '' : 'disabled'} onchange="updateTotalPrice('editOrder')">
             <div class="d-flex flex-row justify-content-between">                
                 <div class="d-flex">
                     <div class="orderProductImage">
@@ -47,7 +47,7 @@ const getOrder = (selectedOrder) => {
                         <div>${orderItem.product.name}</div>                                              
                         <div class="form-group d-flex">
                             <label for="editQuantity${index}">Qty:</label>
-                            <input type="number" class="ms-1 form-control orderProductQuantity" name="orderItems[${index}].quantity" id="editQuantity${orderItem.product.id}" value="${orderItem.quantity}" required step="1" min="0" onchange="updateTotalPrice('editOrder')">
+                            <input type="number" class="ms-1 form-control orderProductQuantity" name="orderItems[${index}].quantity" id="editQuantity${orderItem.product.id}" value="${orderItem.quantity}" required step="1" min="0" ${selectedOrder.status === 'Pending' ? '' : 'disabled'} onchange="updateTotalPrice('editOrder')">
                         </div>
                     </div>
                 </div>
@@ -57,7 +57,6 @@ const getOrder = (selectedOrder) => {
             <input type="hidden" name="orderItems[${index}].product.id" value="${orderItem.product.id}">
             <input type="hidden" name="orderItems[${index}].selected" value="${orderItem.product.id}" id="hiddenSelectedEditOrder${index}">
             <input type="hidden" name="orderItems[${index}].price" id="hiddenPriceEditOrder${orderItem.product.id}" value="${orderItem.product.price}">
-          
         </div>
         `;
         orderItemsContainer.appendChild(itemDiv);

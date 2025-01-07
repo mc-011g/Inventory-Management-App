@@ -1,6 +1,8 @@
 package com.example.inventoryapp.service;
 
 import java.text.NumberFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -8,6 +10,7 @@ import java.util.Locale;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -49,6 +52,34 @@ public class OrderService {
         }
 
         return orders;
+    }
+
+    // Automatically update order status after 5 minutes
+    @Scheduled(fixedRate = 300000)
+    public void updatePendingOrderStatus() {
+
+        List<Order> pendingOrders = orderRepository.findByStatus("Pending");
+
+        if (pendingOrders != null) {
+            Date currentDate = new Date();
+            SimpleDateFormat dateFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");
+
+            for (Order order : pendingOrders) {
+                Date orderCreationDate;
+                try {
+                    orderCreationDate = dateFormat.parse(order.getCreatedAt());
+                    long millisecondDifference = Math.abs(currentDate.getTime() - orderCreationDate.getTime());
+                    long minuteDifference = millisecondDifference / (60 * 1000);
+
+                    if (order.getStatus().equals("Pending") && minuteDifference >= 5) {
+                        order.setStatus("Processed");
+                        orderRepository.save(order);
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     public String getTotalSalesValue(String userId) {

@@ -199,26 +199,30 @@ public class OrderController {
             model.addAttribute("showEditModal", true);
 
             return "orders";
+
         }
 
         redirectAttributes.addFlashAttribute("message", "editOrder");
 
-        List<OrderItem> orderItems = editedOrder.getOrderItems();
-        List<OrderItem> selectedOrderItems = new ArrayList<>();
-        double totalPrice = 0;
+        if (editedOrder.getStatus().equals("Pending")) {
+            List<OrderItem> orderItems = editedOrder.getOrderItems();
+            List<OrderItem> selectedOrderItems = new ArrayList<>();
+            double totalPrice = 0;
 
-        for (OrderItem orderItem : orderItems) {
-            if (orderItem.isSelected()) {
-                orderItem.setProduct(productService.getProduct(orderItem.getProduct().getId()));
-                selectedOrderItems.add(orderItem);
-                totalPrice += orderItem.getProduct().getPrice() * orderItem.getQuantity();
+            for (OrderItem orderItem : orderItems) {
+                if (orderItem.isSelected()) {
+                    orderItem.setProduct(productService.getProduct(orderItem.getProduct().getId()));
+                    selectedOrderItems.add(orderItem);
+                    totalPrice += orderItem.getProduct().getPrice() * orderItem.getQuantity();
+                }
             }
+            editedOrder.setOrderItems(selectedOrderItems);
+            editedOrder.setTotalPrice(totalPrice);
+        } else {
+            editedOrder.setOrderItems(orderService.getOrder(editedOrder.getId()).getOrderItems());
         }
 
-        editedOrder.setOrderItems(selectedOrderItems);
-        editedOrder.setTotalPrice(totalPrice);
         orderService.updateOrder(editedOrder);
-
         return "redirect:/orders";
     }
 
