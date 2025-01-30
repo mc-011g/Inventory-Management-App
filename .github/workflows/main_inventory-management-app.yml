@@ -12,10 +12,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
-    env:
-      ATLAS_URI: ${{ secrets.ATLAS_URI }}
-      DB_NAME: ${{ secrets.DB_NAME }}
+    permissions:
+      contents: read #This is required for actions/checkout
 
     steps:
       - uses: actions/checkout@v4
@@ -43,6 +41,7 @@ jobs:
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     permissions:
       id-token: write #This is required for requesting the JWT
+      contents: read #This is required for actions/checkout
   
     steps:
       - name: Download artifact from build job
@@ -53,9 +52,9 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_9F8C4222A86F476FAF616F8AC027C596 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_8F105A057AEF43E1BC2930B80688DB2B }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_1213CC33ED0E4CF3A95D99EF6926C903 }}     
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_AEC13B8D99FF423FBA2122425B85A20A }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_AA3D16150B5A4050ABDF56D907ACE7EF }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_02A122828B274A6F9F41A2CF24630719 }}
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
@@ -64,3 +63,4 @@ jobs:
           app-name: 'inventory-management-app'
           slot-name: 'Production'
           package: '*.jar'
+          
