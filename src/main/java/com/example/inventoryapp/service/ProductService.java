@@ -83,10 +83,10 @@ public class ProductService {
         return products;
     }
 
-    public boolean checkIfProductExists(String name, String userId) {
+    public boolean checkIfProductExists(String SKU, String userId) {
         List<Product> userProducts = productRepository.findProductsByUserId(userId);
         for (Product userProduct : userProducts) {
-            if (userProduct.getName().equals(name)) {
+            if (userProduct.getSKU().equals(SKU)) {
                 return true;
             }
         }
@@ -94,7 +94,7 @@ public class ProductService {
     }
 
     public String createNewProduct(Product newProduct, String userId) {
-        if (checkIfProductExists(newProduct.getName(), userId)) {
+        if (checkIfProductExists(newProduct.getSKU(), userId)) {
             return "existingProduct";
         } else {
             productRepository.save(newProduct);
@@ -102,13 +102,33 @@ public class ProductService {
         }
     }
 
+    public void returnCancelledOrderItems(Product orderItemProduct, int returnAmount) {
+        orderItemProduct.setQuantity(orderItemProduct.getQuantity() + returnAmount);
+        productRepository.save(orderItemProduct);
+    }
+
+    public void removeProductQuantityFromOrderItem(Product orderItemProduct, int removeAmount) {
+        orderItemProduct.setQuantity(orderItemProduct.getQuantity() - removeAmount);
+        productRepository.save(orderItemProduct);
+    }
+
     public void updateProduct(String _id, String name, String category, double price, int quantity, String SKU) {
         customItemRepository.updateProductDetails(_id, name, category, price, quantity, SKU);
     }
 
-    public void updateProduct(Product product) {
+    public String updateProduct(Product product, String userId) {
+        String originalProductSKU = productRepository.findProductById(product.getId()).getSKU();
+
+        // Compare original SKU to edited SKU
+        if (!originalProductSKU.equals(product.getSKU())) {
+            if (checkIfProductExists(product.getSKU(), userId)) {
+                return "existingProduct";
+            }
+        }
+
         product.setUpdatedAt(new Date().toString());
         productRepository.save(product);
+        return "editProduct";
     }
 
     public void deleteProduct(String id) {

@@ -17,14 +17,19 @@ import org.springframework.stereotype.Service;
 
 import com.example.inventoryapp.model.Order;
 import com.example.inventoryapp.model.OrderItem;
+import com.example.inventoryapp.model.Product;
 import com.example.inventoryapp.model.User;
 import com.example.inventoryapp.repository.OrderRepository;
+import com.example.inventoryapp.repository.ProductRepository;
 
 @Service
 public class OrderService {
 
     @Autowired
     OrderRepository orderRepository;
+
+    @Autowired
+    ProductRepository productRepository;
 
     public List<Order> getAllOrders() {
         return orderRepository.findAll();
@@ -54,7 +59,7 @@ public class OrderService {
         return orders;
     }
 
-    // Automatically update order status after 5 minutes
+    // Automatically update order status after 5 minutes from pending to processeed
     @Scheduled(fixedRate = 300000)
     public void updatePendingOrderStatus() {
 
@@ -80,6 +85,7 @@ public class OrderService {
                 }
             }
         }
+
     }
 
     public String getTotalSalesValue(String userId) {
@@ -111,5 +117,20 @@ public class OrderService {
 
     public void deleteOrder(String id) {
         orderRepository.deleteById(id);
+    }
+
+    public String cancelOrder(Order order) {
+
+        // Return all order item's product quantity
+        List<OrderItem> orderItems = order.getOrderItems();
+        for (OrderItem orderItem : orderItems) {
+            Product product = orderItem.getProduct();
+            product.setQuantity(product.getQuantity() + orderItem.getQuantity());
+            productRepository.save(product);
+        }
+
+        order.setStatus("Cancelled");
+        orderRepository.save(order);
+        return "cancelOrder";
     }
 }

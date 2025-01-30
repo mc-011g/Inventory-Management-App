@@ -19,11 +19,15 @@ public class User implements UserDetails {
     @Field("_id")
     private String id;
 
-    @NotEmpty(message = "Email cannot be empty")
+    @NotEmpty(message = "Email is required")
     @Email(message = "Email should be valid")
     private String email;
 
     private String password;
+
+    private String firstName;
+
+    private String lastName;
 
     private Set<GrantedAuthority> userAuthorities;
 
@@ -39,10 +43,12 @@ public class User implements UserDetails {
         this.userAuthorities = grantedAuthorities;
     }
 
-    public User(String id, String email, String password, String role) {
+    public User(String id, String email, String password, String firstName, String lastName, String role) {
         this.id = id;
         this.email = email;
         this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.role = role;
     }
 
@@ -68,12 +74,28 @@ public class User implements UserDetails {
         return email;
     }
 
-    public String getId() {
-        return id;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void set_id(String id) {
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setId(String id) {
         this.id = id;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public void setEmail(String email) {

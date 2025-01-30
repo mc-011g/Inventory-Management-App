@@ -1,5 +1,6 @@
 package com.example.inventoryapp.controller;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -20,6 +21,7 @@ import com.example.inventoryapp.model.Product;
 import com.example.inventoryapp.model.User;
 import com.example.inventoryapp.service.OrderService;
 import com.example.inventoryapp.service.ProductService;
+import com.example.inventoryapp.service.UserService;
 
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,6 +36,9 @@ public class OrderController {
 
     @Autowired
     private ProductService productService;
+
+    @Autowired
+    private UserService userService;
 
     @PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')")
     @GetMapping("/orders")
@@ -130,27 +135,31 @@ public class OrderController {
 
         for (OrderItem orderItem : orderItems) {
             if (orderItem.isSelected()) {
-                orderItem.setProduct(productService.getProduct(orderItem.getProduct().getId())); // get rest of
-                                                                                                 // information besides
-                                                                                                 // id
-                selectedOrderItems.add(orderItem);
-                totalPrice += orderItem.getProduct().getPrice() * orderItem.getQuantity();
+                orderItem.setProduct(productService.getProduct(orderItem.getProduct().getId()));
+
+                if (orderItem.getQuantity() <= orderItem.getProduct().getQuantity()) {
+                    selectedOrderItems.add(orderItem);
+                    productService.removeProductQuantityFromOrderItem(orderItem.getProduct(), orderItem.getQuantity());
+                    totalPrice += orderItem.getProduct().getPrice() * orderItem.getQuantity();
+                }
             }
         }
 
-        // Processed by default for now
-        String creationDate = new Date().toString();
+        if (selectedOrderItems.size() != 0) {
+            String creationDate = new Date().toString();
 
-        newOrder.setCreatedAt(creationDate);
-        newOrder.setUpdatedAt(creationDate);
-        newOrder.setStatus("Pending");
-        newOrder.setOrderItems(selectedOrderItems);
-        newOrder.setTotalPrice(totalPrice);
+            newOrder.setCreatedAt(creationDate);
+            newOrder.setUpdatedAt(creationDate);
+            newOrder.setStatus("Pending");
+            newOrder.setOrderItems(selectedOrderItems);
+            newOrder.setTotalPrice(totalPrice);
 
-        String message = orderService.createNewOrder(newOrder);
-        model.addAttribute("newOrder", newOrder);
-
-        redirectAttributes.addFlashAttribute("message", message);
+            String message = orderService.createNewOrder(newOrder);
+            model.addAttribute("newOrder", newOrder);
+            redirectAttributes.addFlashAttribute("message", message);
+        } else {
+            redirectAttributes.addFlashAttribute("message", "noItemsInOrder");
+        }
         return "redirect:/orders";
     }
 
@@ -159,7 +168,9 @@ public class OrderController {
             @Valid @ModelAttribute Order editedOrder,
             BindingResult bindingResult,
             RedirectAttributes redirectAttributes,
-            Model model) {
+            Model model, Principal principal) {
+
+        User user = userService.getUserByEmail(principal.getName());
 
         // Custom validation logic
         if (editedOrder.getTotalPrice() < 0) {
@@ -182,6 +193,11 @@ public class OrderController {
                     "error.editedOrder",
                     "Customer address is required");
         }
+        if (editedOrder.getCustomerPhone() == null || editedOrder.getCustomerPhone().isEmpty()) {
+            bindingResult.rejectValue("customerPhone",
+                    "error.editedOrder",
+                    "Customer phone is required");
+        }
         if (editedOrder.getOrderItems() == null || editedOrder.getOrderItems().isEmpty()) {
             bindingResult.rejectValue("orderItems",
                     "error.editedOrder",
@@ -191,10 +207,12 @@ public class OrderController {
         if (bindingResult.hasErrors()) {
             // Re-fetch list of orders
             List<Order> orders = orderService.getOrders();
+            List<Product> products = productService.getProducts();
 
             model.addAttribute("orders", orders);
-            model.addAttribute("editedOrder", editedOrder);
+            model.addAttribute("products", products);
             model.addAttribute("org.springframework.validation.BindingResult.editedOrder", bindingResult);
+            model.addAttribute("editedOrder", editedOrder);
             model.addAttribute("newOrder", new Order());
             model.addAttribute("showEditModal", true);
 
@@ -205,24 +223,73 @@ public class OrderController {
         redirectAttributes.addFlashAttribute("message", "editOrder");
 
         if (editedOrder.getStatus().equals("Pending")) {
-            List<OrderItem> orderItems = editedOrder.getOrderItems();
-            List<OrderItem> selectedOrderItems = new ArrayList<>();
-            double totalPrice = 0;
 
-            for (OrderItem orderItem : orderItems) {
-                if (orderItem.isSelected()) {
-                    orderItem.setProduct(productService.getProduct(orderItem.getProduct().getId()));
-                    selectedOrderItems.add(orderItem);
-                    totalPrice += orderItem.getProduct().getPrice() * orderItem.getQuantity();
+            // Update order items and their products
+            Order originalOrder = orderService.getOrder(editedOrder.getId());
+            List<OrderItem> editedOrderItems = editedOrder.getOrderItems();
+            List<OrderItem> orginalOrderItems = originalOrder.getOrderItems();
+
+            List<OrderItem> selectedOrderItems = new ArrayList<>();
+
+            for (OrderItem editedOrderItem : editedOrderItems) {
+                if (editedOrderItem.isSelected()) {
+                    for (OrderItem originalOrderItem : orginalOrderItems) {
+                        if (originalOrderItem.getProduct().getId().equals(editedOrderItem.getProduct().getId())) {
+
+                            if (originalOrderItem.getQuantity() != editedOrderItem.getQuantity()) {
+                                int difference = originalOrderItem.getQuantity() - editedOrderItem.getQuantity();
+                                Product productToUpdate = originalOrderItem.getProduct();
+
+                                if (difference > 0) {
+                                    productToUpdate.setQuantity(productToUpdate.getQuantity() + difference);
+                                } else {
+                                    productToUpdate.setQuantity(productToUpdate.getQuantity() - Math.abs(difference));
+                                }
+
+                                productService.updateProduct(productToUpdate, user.getId());
+                            }
+
+                            // Add product information to edited product
+                            editedOrderItem.setProduct(originalOrderItem.getProduct());
+                        }
+                    }
+
+                    editedOrder.setTotalPrice(editedOrder.getTotalPrice()
+                            + (editedOrderItem.getProduct().getPrice() * editedOrderItem.getQuantity()));
+                    selectedOrderItems.add(editedOrderItem);
+                } else {
+
+                    // Return unselected items to the product quantity
+                    for (OrderItem originalOrderItem : orginalOrderItems) {
+                        if (originalOrderItem.getProduct().getId().equals(editedOrderItem.getProduct().getId())) {
+                            Product productToUpdate = originalOrderItem.getProduct();
+                            productToUpdate.setQuantity(productToUpdate.getQuantity() + editedOrderItem.getQuantity());
+                            productService.updateProduct(productToUpdate, user.getId());
+                        }
+                    }
                 }
             }
+
             editedOrder.setOrderItems(selectedOrderItems);
-            editedOrder.setTotalPrice(totalPrice);
-        } else {
-            editedOrder.setOrderItems(orderService.getOrder(editedOrder.getId()).getOrderItems());
+            orderService.updateOrder(editedOrder);
         }
 
-        orderService.updateOrder(editedOrder);
+        return "redirect:/orders";
+    }
+
+    @PostMapping(path = "/orders", params = "cancelOrder")
+    public String cancelOrder(@RequestParam String cancelOrderId, RedirectAttributes redirectAttributes) {
+        Order order = orderService.getOrder(cancelOrderId);
+        String message = "";
+
+        if (order.getStatus().equals("Pending")) {
+            message = orderService.cancelOrder(order);
+        } else {
+            message = "cancelOrderFailed";
+        }
+
+        redirectAttributes.addFlashAttribute("message", message);
+
         return "redirect:/orders";
     }
 
@@ -240,7 +307,7 @@ public class OrderController {
         List<Order> searchResults = new ArrayList<>();
 
         for (Order order : orders) {
-            if (order.getId().toString().contains(searchQuery)) {
+            if (order.getCustomerName().toLowerCase().contains(searchQuery.toLowerCase())) {
                 searchResults.add(order);
             }
         }

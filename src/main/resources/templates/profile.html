@@ -11,133 +11,182 @@
 </head>
 
 <body>
-    <nav class="navbar fixed-top navbar-expand bg-white">
-        <div class="container-fluid">
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
-                aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-lg-0 w-100 align-items-center justify-content-between">
-                    <li class="nav-item">
-                        <button class="btn btn-outline-secondary offcanvasSidebarToggle" type="button"
-                            data-bs-toggle="offcanvas" data-bs-target="#offcanvasSidebar"
-                            aria-controls="offcanvasSidebar" id="sidebarToggle">
-
-                            <i class="bi bi-list"></i>
-                        </button>
-                    </li>
-                    </li>
-                    <div sec:authorize="hasAuthority('ADMIN')">
-                        <li class="nav-item">
-                            <a class="nav-link" href="/users">Users</a>
-                        </li>
-                    </div>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown"
-                            aria-expanded="false">
-                            <i class="bi bi-person-circle fs-4"></i>
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
-                            <li><a class="dropdown-item" href="/profile">Profile</a></li>
-                            <li>
-                                <form th:action="@{/logout}" method="post">
-                                    <input type="submit" class="dropdown-item" value="Logout">
-                                </form>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
 
     <!-- Offcanvas sidebar -->
     <div class="sidebar offcanvasSidebar p-4 offcanvas offcanvas-start" tabindex="-1" id="offcanvasSidebar"
         aria-labelledby="offcanvasSidebarLabel">
-
         <div class="offcanvas-header">
             <button type="button" class="btn-close text-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
-
         <a class="navbar-brand fs-2 text-white" href="/dashboard">Inventory</a>
+        <div class="d-flex justify-content-between flex-column h-100">
+            <ul class="navbar-nav pt-3">
+                <li class="nav-item">
+                    <a class="nav-item-group" href="/dashboard">
+                        <i class="bi bi-grid"></i>
+                        <span class="nav-link">Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-item-group" href="/products">
+                        <i class="bi bi-box"></i>
+                        <span class="nav-link">Products</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-item-group" href="/categories">
+                        <i class="bi bi-folder"></i>
+                        <span class="nav-link">Categories</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-item-group" href="/orders">
+                        <i class="bi bi-cart"></i>
+                        <span class="nav-link">Orders</span>
+                    </a>
+                </li>
+            </ul>
 
-        <ul class="offcanvas-body navbar-nav pt-3">
-            <li class="nav-item">
-                <i class="bi bi-grid"></i>
-                <a class="nav-link" href="/dashboard">Dashboard</a>
-            </li>
-            <li class="nav-item">
-                <i class="bi bi-box"></i>
-                <a class="nav-link" href="/products">Products</a>
-            </li>
-            <li class="nav-item">
-                <i class="bi bi-cart"></i>
-                <a class="nav-link" href="/orders">Orders</a>
-            </li>
-        </ul>
+            <div class="d-flex justify-content-center">
+                <a class="nav-link" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown"
+                    aria-expanded="false">
+                    <i class="bi bi-person-circle pe-0"></i>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
+                    <li><a class="dropdown-item" href="/profile">Profile</a></li>
+                    <li>
+                        <form th:action="@{/logout}" method="post">
+                            <input type="submit" class="dropdown-item" value="Logout">
+                        </form>
+                    </li>
+                </ul>
+            </div>
+        </div>
     </div>
 
     <!-- Main sidebar -->
     <div class="sidebar p-4">
         <a class="navbar-brand fs-2 text-white" href="/dashboard">Inventory</a>
-        <ul class="navbar-nav pt-3">
-            <li class="nav-item">
-                <i class="bi bi-grid"></i>
-                <a class="nav-link" href="/dashboard">Dashboard</a>
-            </li>
-            <li class="nav-item">
-                <i class="bi bi-box"></i>
-                <a class="nav-link" href="/products">Products</a>
-            </li>
-            <li class="nav-item">
-                <i class="bi bi-cart"></i>
-                <a class="nav-link" href="/orders">Orders</a>
-            </li>
-        </ul>
+
+        <div class="d-flex justify-content-between flex-column h-100">
+            <ul class="navbar-nav pt-3">
+                <li class="nav-item">
+                    <a class="nav-item-group" href="/dashboard">
+                        <i class="bi bi-grid"></i>
+                        <span class="nav-link">Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-item-group" href="/products">
+                        <i class="bi bi-box"></i>
+                        <span class="nav-link">Products</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-item-group" href="/categories">
+                        <i class="bi bi-folder"></i>
+                        <span class="nav-link">Categories</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-item-group" href="/orders">
+                        <i class="bi bi-cart"></i>
+                        <span class="nav-link">Orders</span>
+                    </a>
+                </li>
+            </ul>
+
+            <div class="d-flex justify-content-center">
+                <a class="nav-link" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown"
+                    aria-expanded="false">
+                    <i class="bi bi-person-circle pe-0"></i>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
+                    <li><a class="dropdown-item" href="/profile">Profile</a></li>
+                    <li>
+                        <form th:action="@{/logout}" method="post">
+                            <input type="submit" class="dropdown-item" value="Logout">
+                        </form>
+                    </li>
+                </ul>
+            </div>
+        </div>
     </div>
 
     <div class="main-content">
         <div class="content flex-grow-1 p-4 bg-body-tertiary">
-            <h2 class="">Your Profile</h2>
+            <div class="d-flex gap-3 align-items-start">
+                <button class="btn btn-outline-secondary offcanvasSidebarToggle" type="button"
+                    data-bs-toggle="offcanvas" data-bs-target="#offcanvasSidebar" aria-controls="offcanvasSidebar"
+                    id="sidebarToggle">
+                    <i class="bi bi-list"></i>
+                </button>
+                <h2 class="pb-3">Your Profile</h2>
+            </div>
+
             <div class="products-content bg-white p-4 rounded-4">
-                <form th:action="@{/profile/update}" th:object="${user}" method="post" class="d-flex flex-column gap-3">
+                <form th:action="@{/profile/update}" th:object="${user}" method="post"
+                    class="d-flex flex-column gap-3 h-100" id="profileForm">
                     <input type="hidden" th:field="*{role}">
+                    <input type="hidden" th:field="*{id}">
+
+                    <div class="profileImage">
+                        <i class="bi bi-person-circle"></i>
+                        <div class=" d-flex flex-column flex-grow-1">
+                            Upload new image
+                            <input class="form-control" type="file" id="profilePhoto" disabled>
+                        </div>
+                    </div>
+
                     <div class="form-group">
                         <div id="emailField">
                             <label for="emailInput">Email</label>
                             <input class="form-control" type="email" id="emailInput" th:field="*{email}" name="email"
-                                readonly />
+                                maxlength="50" required />
                         </div>
-                        <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+                        <div class="text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
                     </div>
+
                     <div class="form-group">
-                        <div id="passwordField">
-                            <label for="passwordInput">Password</label>
-                            <input class="form-control" type="password" id="passwordInput" value="password"
-                                name="passwordPlaceholder" readonly />
+                        <div id="firstNameField">
+                            <label for="firstNameInput">First Name</label>
+                            <input class="form-control" type="text" id="firstNameInput" th:field="*{firstName}"
+                                name="firstName" required maxlength="50" />
+                        </div>
+                        <div class="text-danger" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}">
                         </div>
                     </div>
-                    <div hidden id="newPasswordInputs">
+
+                    <div class="form-group">
+                        <div id="lastNameField">
+                            <label for="lastNameInput">Last Name</label>
+                            <input class="form-control" type="text" id="lastNameInput" th:field="*{lastName}"
+                                name="lastName" required maxlength="50" />
+                        </div>
+                        <div class="text-danger" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></div>
+                    </div>
+
+                    <div id="newPasswordInputs" class="my-3">
                         <div class="d-flex flex-column gap-3">
                             <div class="position-relative">
-                                <label for="passwordMatch">New Password</label>
+                                <label for="passwordMatchProfile">New Password</label>
                                 <div class="position-relative">
-                                    <input class="form-control" type="password" name="password" id="passwordMatch"
-                                        th:field="*{password}" />
-                                    <i class="bi bi-eye" id="passwordDisplayToggleMatch"
+                                    <input class="form-control" type="password" name="newPassword" id="newPassword"
+                                        th:field="*{newPassword}" autocomplete="new-password" minlength="8"
+                                        maxlength="100" />
+                                    <i class="bi bi-eye" id="newPasswordDisplayToggle"
                                         style="position: absolute; right: 0.75rem; top: 0.375rem; cursor: pointer;"></i>
                                 </div>
-                                <div class="text-danger" th:if="${#fields.hasErrors('password')}"
-                                    th:errors="*{password}">
-                                    Password Error</div>
+                                <div class="text-danger" th:if="${#fields.hasErrors('newPassword')}"
+                                    th:errors="*{newPassword}">
+                                    Password Error
+                                </div>
                             </div>
                             <div class="position-relative">
                                 <label for="confirmPasswordMatch">Confirm New Password</label>
                                 <div class="position-relative">
-                                    <input class="form-control" type="password" value="" name="confirmPasswordMatch"
-                                        id="confirmPasswordMatch" />
+                                    <input class="form-control" type="password" value="" name="confirmPassword"
+                                        id="confirmPassword" minlength="8" maxlength="100" />
                                     <i class="bi bi-eye" id="confirmPasswordDisplayToggle"
                                         style="position: absolute; right: 0.75rem; top: 0.375rem; cursor: pointer;"></i>
                                 </div>
@@ -145,22 +194,37 @@
                             </div>
                         </div>
                     </div>
-                    <button type="button" name="editButton" id="editButton" class="btn btn-primary"
-                        onclick="setEditMode(true)">
-                        Change Password
-                    </button>
-                    <div id="editButtons" hidden>
-                        <div class="d-flex gap-3">
-                            <button type="button" name="cancelButton" id="cancelButton"
-                                class="btn btn-outline-primary w-100" onclick="setEditMode(false)">
-                                Cancel
-                            </button>
-                            <button type="submit" name="submitButton" id="submitButton" class="btn btn-primary w-100"
-                                disabled>
-                                Save
-                            </button>
+
+                    <div class="form-group">
+                        <div id="passwordField" class="position-relative">
+                            <label for="passwordInput">Current Password</label>
+                            <div class="position-relative">
+                                <input class="form-control" type="password" id="password" name="password"
+                                    autocomplete="new-password" th:field="*{password}" required minlength="8"
+                                    maxlength="100" />
+                                <i class="bi bi-eye" id="passwordDisplayToggle"
+                                    style="position: absolute; right: 0.75rem; top: 0.375rem; cursor: pointer;"></i>
+                            </div>
+                            <div class="text-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">
+                                Password Error
+                            </div>
                         </div>
                     </div>
+
+                    <div class="d-flex justify-content-between flex-column">
+                        <div id="saveChangesButtons">
+                            <div class="d-flex gap-3">
+                                <button type="button" name="cancelButton" id="cancelButton"
+                                    class="btn btn-outline-dark w-100">
+                                    Cancel
+                                </button>
+                                <button type="submit" name="submitButton" id="submitButton" class="btn btn-dark w-100">
+                                    Save changes
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
                 </form>
             </div>
         </div>
@@ -182,43 +246,20 @@
     <script type="text/javascript" th:src="@{/js/script.js}"></script>
 
     <script th:inline="javascript">
-        let showPasswordInputs = /*[[${showPasswordInputs}]]*/ '';
-        let editMode = false;
         let action = /*[[${message}]]*/ '';
+
         const toastTrigger = document.getElementById('liveToastBtn');
         const toastLiveExample = document.getElementById('liveToast');
         const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample);
         const toastMessage = document.getElementById("toast-message");
-
-        const setEditMode = (value) => {
-            editMode = value;
-            changeEditDisplay();
-        }
-
-        const changeEditDisplay = () => {
-            if (editMode === true) {
-                document.getElementById('newPasswordInputs').hidden = false;
-                document.getElementById('editButtons').hidden = false;
-                document.getElementById('editButton').hidden = true;
-            } else {
-                document.getElementById('passwordField').hidden = false;
-                document.getElementById('editButtons').hidden = true;
-                document.getElementById('newPasswordInputs').hidden = true;
-                document.getElementById('editButton').hidden = false;
-            }
-        }
-
-        if (showPasswordInputs) {
-            editMode = true;
-            changeEditDisplay();
-        }
 
         if (action !== null) {
             if (action === 'saveProfile') {
                 toastMessage.innerText = "Saved profile.";
             }
             toastBootstrap.show()
-        }    
+        }
+
     </script>
 </body>
 

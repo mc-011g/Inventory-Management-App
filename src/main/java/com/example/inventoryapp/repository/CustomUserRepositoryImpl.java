@@ -21,8 +21,8 @@ public class CustomUserRepositoryImpl implements CustomUserRepository {
     private PasswordEncoder passwordEncoder;
 
     @Override
-    public void updateUserPassword(String email, String password) {
-        Query query = new Query(Criteria.where("email").is(email));
+    public void updateUserPassword(String id, String password) {
+        Query query = new Query(Criteria.where("id").is(id));
 
         Update update = new Update();
         String encodedNewPassword = passwordEncoder.encode(password);
@@ -32,17 +32,23 @@ public class CustomUserRepositoryImpl implements CustomUserRepository {
         System.out.println(result.getModifiedCount() + " document(s) updated.");
     }
 
-    @Override
-    public void updateUserDetails(String id, String email, String role, String newPassword) {
+    public void updateProfileInformation(String id, String email, String firstName, String lastName, String newPassword,
+            String role) {
+
         Query query = new Query(Criteria.where("id").is(id));
         System.out.println("QUERY:" + query);
 
         Update update = new Update();
         update.set("email", email);
-        update.set("role", role);
+        update.set("firstName", firstName);
+        update.set("lastName", lastName);
 
-        if (newPassword != "") { // Only update if there is a new password being set
+        if (newPassword != "") {
             update.set("password", passwordEncoder.encode(newPassword));
+        }
+
+        if (role != "") {
+            update.set("role", role);
         }
 
         UpdateResult result = mongoTemplate.updateFirst(query, update, User.class);

@@ -1,5 +1,6 @@
 package com.example.inventoryapp.controller;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -19,9 +20,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.example.inventoryapp.model.Category;
 import com.example.inventoryapp.model.Product;
 import com.example.inventoryapp.model.User;
+import com.example.inventoryapp.service.CategoryService;
 import com.example.inventoryapp.service.ProductService;
+import com.example.inventoryapp.service.UserService;
 
 import jakarta.validation.Valid;
 
@@ -31,10 +35,18 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
+    @Autowired
+    private CategoryService categoryService;
+
+    @Autowired
+    private UserService userService;
+
     @PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')")
     @GetMapping("/products")
-    public String home(Model model, @RequestParam(required = false) String editProductId) {
+    public String home(Model model, @RequestParam(required = false) String editProductId, Principal principal) {
         List<Product> products = productService.getProducts();
+        List<Category> categories = categoryService
+                .getCategoriesByUserId(userService.getUserByEmail(principal.getName()).getId());
 
         if (editProductId != null) {
             Product product = productService.getProduct(editProductId);
@@ -44,6 +56,7 @@ public class ProductController {
         }
 
         model.addAttribute("products", products);
+        model.addAttribute("categories", categories);
         model.addAttribute("newProduct", new Product());
         model.addAttribute("form", new Product());
 
@@ -70,19 +83,15 @@ public class ProductController {
         }
         if (newProduct.getName() == null || newProduct.getName().isEmpty()) {
             bindingResult.rejectValue("name",
-                    "error.newProduct",
+                    "error.newProduct.name",
                     "Name is required");
         }
         if (newProduct.getSKU() == null || newProduct.getSKU().isEmpty()) {
-            bindingResult.rejectValue("name",
-                    "error.newProduct",
+            bindingResult.rejectValue("SKU",
+                    "error.newProduct.SKU",
                     "SKU is required");
         }
-        if (newProduct.getCategory() == null || newProduct.getCategory().isEmpty()) {
-            bindingResult.rejectValue("category",
-                    "error.newProduct",
-                    "Category is required");
-        }
+
         if (newProduct.getQuantity() < 0) {
             bindingResult.rejectValue("quantity",
                     "error.newProduct",
@@ -90,6 +99,7 @@ public class ProductController {
         }
 
         if (bindingResult.hasErrors()) {
+
             // Re-fetch list of products
             List<Product> products = productService.getProducts();
             model.addAttribute("products", products);
@@ -97,7 +107,6 @@ public class ProductController {
             model.addAttribute("newProduct", newProduct);
             model.addAttribute("editedProduct", new Product());
             model.addAttribute("showAddModal", true);
-
             return "products";
         }
 
@@ -118,6 +127,9 @@ public class ProductController {
             RedirectAttributes redirectAttributes,
             Model model) {
 
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) authentication.getPrincipal();
+
         // Custom validation logic
         if (editedProduct.getPrice() < 0) {
             bindingResult.rejectValue("price",
@@ -126,19 +138,15 @@ public class ProductController {
         }
         if (editedProduct.getName() == null || editedProduct.getName().isEmpty()) {
             bindingResult.rejectValue("name",
-                    "error.editedProduct",
+                    "error.editedProduct.name",
                     "Name is required");
         }
         if (editedProduct.getSKU() == null || editedProduct.getSKU().isEmpty()) {
-            bindingResult.rejectValue("name",
-                    "error.editedProduct",
+            bindingResult.rejectValue("SKU",
+                    "error.editedProduct.SKU",
                     "SKU is required");
         }
-        if (editedProduct.getCategory() == null || editedProduct.getCategory().isEmpty()) {
-            bindingResult.rejectValue("category",
-                    "error.editedProduct",
-                    "Category is required");
-        }
+
         if (editedProduct.getQuantity() < 0) {
             bindingResult.rejectValue("quantity",
                     "error.editedProduct",
@@ -146,20 +154,20 @@ public class ProductController {
         }
 
         if (bindingResult.hasErrors()) {
+
             // Re-fetch list of products
             List<Product> products = productService.getProducts();
-
             model.addAttribute("products", products);
             model.addAttribute("editedProduct", editedProduct);
             model.addAttribute("org.springframework.validation.BindingResult.editedProduct", bindingResult);
             model.addAttribute("newProduct", new Product());
             model.addAttribute("showEditModal", true);
-
             return "products";
         }
 
-        redirectAttributes.addFlashAttribute("message", "editProduct");
-        productService.updateProduct(editedProduct);
+        String message = productService.updateProduct(editedProduct, user.getId());
+        redirectAttributes.addFlashAttribute("message", message);
+        productService.updateProduct(editedProduct, user.getId());
 
         return "redirect:/products";
     }

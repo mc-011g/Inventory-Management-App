@@ -21,7 +21,7 @@ public class Product {
 
     private double price;
 
-    private String category;
+    private String categoryId;
 
     private int quantity;
 
@@ -39,12 +39,12 @@ public class Product {
     private String updatedAt;
 
     public Product(String id, String name, double price,
-            String category, int quantity, String SKU, List<String> images,
+            String categoryId, int quantity, String SKU, List<String> images,
             List<Map<String, String>> attributes) {
         this.id = id;
         this.name = name;
         this.price = price;
-        this.category = category;
+        this.categoryId = categoryId;
         this.quantity = quantity;
         this.images = images;
     }
@@ -68,8 +68,8 @@ public class Product {
         return price;
     }
 
-    public String getCategory() {
-        return category;
+    public String getCategoryId() {
+        return categoryId;
     }
 
     public int getQuantity() {
@@ -100,8 +100,8 @@ public class Product {
         this.userId = userId;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
+    public void setCategoryId(String categoryId) {
+        this.categoryId = categoryId;
     }
 
     public void setId(String id) {
@@ -144,7 +144,7 @@ public class Product {
         return "Name: " + getName() +
                 " Price: " + getPrice() +
                 " Id: " + getId() +
-                " Category: " + getCategory() +
+                " Category: " + getCategoryId() +
                 " SKU: " + getSKU();
     }
 }

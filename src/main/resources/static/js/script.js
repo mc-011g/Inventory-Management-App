@@ -1,13 +1,29 @@
-const getProduct = (selectedProduct, selectedProductId) => {
+const getProduct = (selectedProduct, selectedProductId) => {    
+
     document.getElementById("editProductName").value = selectedProduct.name;
     document.getElementById("editProductPrice").value = selectedProduct.price;
-    document.getElementById("editProductCategory").value = selectedProduct.category;
     document.getElementById("editProductQuantity").value = selectedProduct.quantity;
     document.getElementById("editProductSKU").value = selectedProduct.sku;
     document.getElementById("editProductId").value = selectedProductId;
     document.getElementById("editProductUserId").value = selectedProduct.userId;
     document.getElementById("editProductImages").value = selectedProduct.images;
     document.getElementById("editProductCreatedAt").value = selectedProduct.createdAt;
+
+    //Select the product's correct category
+    const editProductCategorySelect = document.getElementById("editProductCategory");
+    const options = Array.from(editProductCategorySelect.options);
+
+    options.forEach((option) => {
+        if (option.value == selectedProduct.categoryId) {
+            option.selected = true;
+        }
+    });
+}
+
+const getCategory = (selectedCategory) => {
+    document.getElementById("editCategoryName").value = selectedCategory.name;
+    document.getElementById("editCategoryDescription").value = selectedCategory.description;
+    document.getElementById("editCategoryId").value = selectedCategory.id;
 }
 
 const getOrder = (selectedOrder) => {
@@ -66,7 +82,6 @@ const getOrder = (selectedOrder) => {
     updateTotalPrice('editOrder');
 }
 
-// Event listener for the form submission
 const editOrderForm = document.getElementById("editOrderForm");
 if (editOrderForm) {
     editOrderForm.addEventListener("submit", function (event) {
@@ -135,6 +150,7 @@ document.querySelectorAll("#addOrderModal input[type='checkbox']").forEach(check
     checkbox.addEventListener('change', () => updateTotalPrice('createOrder'));
 });
 
+
 const getProductId = (id) => {
     document.getElementById("deleteProductId").value = id;
 }
@@ -142,6 +158,15 @@ const getProductId = (id) => {
 const getOrderId = (id) => {
     document.getElementById("deleteOrderId").value = id;
 }
+
+const getCategoryId = (id) => {
+    document.getElementById("deleteCategoryId").value = id;
+}
+
+const getCancelOrderId = (id) => {
+    document.getElementById("cancelOrderId").value = id;
+}
+
 
 const getUser = (selectedUser, selectedUserId) => {
     document.getElementById("editUserRole").value = selectedUser.role;
@@ -153,9 +178,20 @@ const getUserId = (id) => {
     document.getElementById("deleteUserId").value = id;
 }
 
+document.addEventListener('DOMContentLoaded', (event) => {
+    const resetProfileChanges = () => {
+        document.getElementById('cancelButton').addEventListener('click', function () {
+            document.getElementById('profileForm').reset();
+            document.getElementById('submitButton').disabled = false;
+            document.getElementById('passwordMatchMessage').hidden = true;
+        });
+    }
+    resetProfileChanges();
+});
+
 $(document).ready(() => {
     $("#passwordDisplayToggle").click(() => {
-        togglePasswordVisiblity();
+        togglePasswordVisiblity("password");
     });
 
     $("#newPasswordDisplayToggle").click(() => {
@@ -166,35 +202,42 @@ $(document).ready(() => {
         togglePasswordVisiblity("editPassword");
     });
 
-    $("#passwordDisplayToggleMatch").click(() => {
-        togglePasswordVisiblity("match");
+    $("#passwordMatchProfile").on("input", () => {
+        saveProfileChangesButtonState();
     });
 
-    $("#passwordMatch").on("input", () => {
+    $("#confirmPasswordMatchProfile").on("input", () => {
+        saveProfileChangesButtonState();
+    });
+
+    $("#newPassword").on("input", () => {   
         checkPasswordMatch();
     });
 
-    $("#confirmPasswordMatch").on("input", () => {
+    $("#confirmPassword").on("input", () => {     
         checkPasswordMatch();
     });
 
     $("#confirmPasswordDisplayToggle").click(() => {
-        toggleConfirmPasswordVisibility();
+        togglePasswordVisiblity("confirmPassword");
     });
 
     const togglePasswordVisiblity = (value) => {
-        let passwordDisplayToggle = document.getElementById("passwordDisplayToggle");
-        let passwordInput = document.getElementById("password");
+        let passwordDisplayToggle = '';
+        let passwordInput = '';
 
         if (value === "newPassword") {
-            passwordInput = document.getElementById('newUserPassword');
+            passwordInput = document.getElementById('newPassword');
             passwordDisplayToggle = document.getElementById('newPasswordDisplayToggle');
         } else if (value === "editPassword") {
             passwordInput = document.getElementById('editUserPassword');
             passwordDisplayToggle = document.getElementById('editPasswordDisplayToggle');
-        } else if (value === "match") {
-            passwordInput = document.getElementById('passwordMatch');
-            passwordDisplayToggle = document.getElementById('passwordDisplayToggleMatch');
+        } else if (value === "password") {
+            passwordInput = document.getElementById('password');
+            passwordDisplayToggle = document.getElementById('passwordDisplayToggle');
+        } else if (value === "confirmPassword") {
+            passwordInput = document.getElementById('confirmPassword');
+            passwordDisplayToggle = document.getElementById('confirmPasswordDisplayToggle');
         }
 
         if (passwordDisplayToggle.classList.contains('bi-eye')) {
@@ -206,22 +249,32 @@ $(document).ready(() => {
         }
     }
 
-    const toggleConfirmPasswordVisibility = () => {
-        let confirmNewPasswordToggle = document.getElementById('confirmPasswordDisplayToggle');
-        let confirmNewPasswordInput = document.getElementById('confirmPasswordMatch');
+    const saveProfileChangesButtonState = () => {
+        let passwordInput = document.getElementById('newPassword');
+        let confirmPasswordInput = document.getElementById('confirmPasswordMatch');
+        let saveChangesButton = document.getElementById('submitButton');
+        let passwordMatchMessage = document.getElementById('passwordMatchMessage');
 
-        if (confirmNewPasswordToggle.classList.contains('bi-eye')) {
-            confirmNewPasswordToggle.classList.replace('bi-eye', 'bi-eye-slash');
-            confirmNewPasswordInput.type = 'text';
+        if (passwordInput.value == '' && confirmPasswordInput.value == '') {
+            createAccountButton.disabled = false;
+        }
+
+        if (passwordInput.value != confirmPasswordInput.value) {
+            saveChangesButton.disabled = true;
+            passwordMatchMessage.hidden = false;
         } else {
-            confirmNewPasswordToggle.classList.replace('bi-eye-slash', 'bi-eye');
-            confirmNewPasswordInput.type = 'password';
+            saveChangesButton.disabled = false;
+            passwordMatchMessage.hidden = true;
+        }
+
+        if ((passwordInput.value == '') && (confirmPasswordInput.value == '')) {
+            passwordMatchMessage.hidden = true;
         }
     }
 
     const checkPasswordMatch = () => {
-        let passwordInput = document.getElementById('passwordMatch');
-        let confirmPasswordInput = document.getElementById('confirmPasswordMatch');
+        let passwordInput = document.getElementById('newPassword');
+        let confirmPasswordInput = document.getElementById('confirmPassword');
         let createAccountButton = document.getElementById('submitButton');
         let passwordMatchMessage = document.getElementById('passwordMatchMessage');
 
@@ -250,5 +303,11 @@ $(document).ready(() => {
     }
     if ($('#addOrderModal').hasClass('show')) {
         $('#addOrderModal').modal('show');
+    }
+    if ($('#editCategoryModal').hasClass('show')) {
+        $('#editCategoryModal').modal('show');
+    }
+    if ($('#addCategoryModal').hasClass('show')) {
+        $('#addCategoryModal').modal('show');
     }
 });

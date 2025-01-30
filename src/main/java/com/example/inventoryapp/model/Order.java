@@ -145,6 +145,7 @@ public class Order {
         this.orderItems = orderItems;
     }
 
+    @Override
     public String toString() {
         return "Customer name: " + getCustomerName() +
                 " Customer email: " + getCustomerEmail() +

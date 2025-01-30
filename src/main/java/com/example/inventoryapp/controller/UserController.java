@@ -44,7 +44,7 @@ public class UserController {
     @PostMapping("/register")
     public String createAccount(@Valid @ModelAttribute User user,
             BindingResult bindingResult,
-            Model model) {
+            Model model, RedirectAttributes redirectAttributes) {
 
         if (userService.checkForExistingEmail(user.getEmail())) {
             bindingResult.rejectValue("email",
@@ -52,10 +52,10 @@ public class UserController {
                     "This email is already being used by another user");
         }
 
-        if (user.getPassword().length() < 6) {
+        if (user.getPassword().length() < 8) {
             bindingResult.rejectValue("password",
                     "error.user",
-                    "Password length needs to be at least 6 characters");
+                    "Password length needs to be at least 8 characters");
         }
 
         if (bindingResult.hasErrors()) {
@@ -63,7 +63,15 @@ public class UserController {
             return "register";
         }
 
-        userService.registerNewUser(UUID.randomUUID().toString(), user.getEmail(), user.getPassword(), "USER");
+        boolean registrationResult = userService.registerNewUser(UUID.randomUUID().toString(), user.getEmail(),
+                user.getPassword(),
+                user.getFirstName(), user.getLastName(), "USER");
+
+        if (registrationResult) {
+            redirectAttributes.addFlashAttribute("message", "registerSuccess");
+        } else {
+            redirectAttributes.addFlashAttribute("message", "registerFailed");
+        }
 
         return "redirect:/login";
     }
@@ -92,10 +100,10 @@ public class UserController {
                     "This email is already being used by another user");
         }
 
-        if (user.getPassword().length() < 6) {
+        if (user.getPassword().length() < 8) {
             bindingResult.rejectValue("password",
                     "error.user",
-                    "Password length needs to be at least 6 characters");
+                    "Password length needs to be at least 8 characters");
         }
 
         if (bindingResult.hasErrors()) {
@@ -106,7 +114,8 @@ public class UserController {
             return "users";
         }
 
-        userService.registerNewUser(UUID.randomUUID().toString(), user.getEmail(), user.getPassword(), user.getRole());
+        userService.registerNewUser(UUID.randomUUID().toString(), user.getEmail(), user.getPassword(),
+                user.getFirstName(), user.getLastName(), user.getRole());
         model.addAttribute("user", userService.getUser(user.getEmail()));
         redirectAttributes.addFlashAttribute("message", "addUser");
 
@@ -118,7 +127,7 @@ public class UserController {
             @Valid @ModelAttribute User user, BindingResult bindingResult,
             Model model, @RequestParam String selectedUserId, RedirectAttributes redirectAttributes) {
 
-        user.set_id(selectedUserId);
+        user.setId(selectedUserId);
 
         if (bindingResult.hasErrors()) {
             List<User> users = userService.getAllUsers();
@@ -135,11 +144,11 @@ public class UserController {
 
         // Change password only if a new one was set
         if (user.getNewPassword() != null && !user.getNewPassword().isEmpty()) {
-            if (user.getNewPassword().length() < 6) {
+            if (user.getNewPassword().length() < 8) {
 
                 bindingResult.rejectValue("newPassword",
                         "error.user",
-                        "Password length needs to be at least 6 characters");
+                        "Password length needs to be at least 8 characters");
 
                 List<User> users = userService.getAllUsers();
 
@@ -155,8 +164,8 @@ public class UserController {
         editedUser.setEmail(user.getEmail());
         editedUser.setRole(user.getRole());
 
-        userService.updateUserInformation(user.getId(), editedUser.getEmail(), editedUser.getRole(),
-                user.getNewPassword());
+        userService.updateUserProfileInformation(user.getId(), user.getEmail(), user.getFirstName(), user.getLastName(),
+                user.getPassword(), user.getRole());
 
         redirectAttributes.addFlashAttribute("message", "editUser");
 

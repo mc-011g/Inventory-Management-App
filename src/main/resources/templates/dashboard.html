@@ -12,99 +12,121 @@
 </head>
 
 <body>
-
     <div class="container-fluid p-0">
-        <nav class="navbar fixed-top navbar-expand bg-white">
-            <div class="container-fluid">
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav me-auto mb-lg-0 w-100 align-items-center justify-content-between">
-                        <li class="nav-item">
-                            <button class="btn btn-outline-secondary offcanvasSidebarToggle" type="button"
-                                data-bs-toggle="offcanvas" data-bs-target="#offcanvasSidebar"
-                                aria-controls="offcanvasSidebar" id="sidebarToggle">
-
-                                <i class="bi bi-list"></i>
-                            </button>
-                        </li>
-                        </li>
-                        <div sec:authorize="hasAuthority('ADMIN')">
-                            <li class="nav-item">
-                                <a class="nav-link" href="/users">Users</a>
-                            </li>
-                        </div>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown"
-                                aria-expanded="false">
-                                <i class="bi bi-person-circle fs-4"></i>
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
-                                <li><a class="dropdown-item" href="/profile">Profile</a></li>
-                                <li>
-                                    <form th:action="@{/logout}" method="post">
-                                        <input type="submit" class="dropdown-item" value="Logout">
-                                    </form>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
 
         <!-- Offcanvas sidebar -->
         <div class="sidebar offcanvasSidebar p-4 offcanvas offcanvas-start" tabindex="-1" id="offcanvasSidebar"
             aria-labelledby="offcanvasSidebarLabel">
-
             <div class="offcanvas-header">
                 <button type="button" class="btn-close text-white" data-bs-dismiss="offcanvas"
                     aria-label="Close"></button>
             </div>
-
             <a class="navbar-brand fs-2 text-white" href="/dashboard">Inventory</a>
+            <div class="d-flex justify-content-between flex-column h-100">
+                <ul class="navbar-nav pt-3">
+                    <li class="nav-item">
+                        <a class="nav-item-group" href="/dashboard">
+                            <i class="bi bi-grid"></i>
+                            <span class="nav-link">Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-item-group" href="/products">
+                            <i class="bi bi-box"></i>
+                            <span class="nav-link">Products</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-item-group" href="/categories">
+                            <i class="bi bi-folder"></i>
+                            <span class="nav-link">Categories</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-item-group" href="/orders">
+                            <i class="bi bi-cart"></i>
+                            <span class="nav-link">Orders</span>
+                        </a>
+                    </li>
+                </ul>
 
-            <ul class="offcanvas-body navbar-nav pt-3">
-                <li class="nav-item">
-                    <i class="bi bi-grid"></i>
-                    <a class="nav-link" href="/dashboard">Dashboard</a>
-                </li>
-                <li class="nav-item">
-                    <i class="bi bi-box"></i>
-                    <a class="nav-link" href="/products">Products</a>
-                </li>
-                <li class="nav-item">
-                    <i class="bi bi-cart"></i>
-                    <a class="nav-link" href="/orders">Orders</a>
-                </li>
-            </ul>
+                <div class="d-flex justify-content-center">
+                    <a class="nav-link" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                        <i class="bi bi-person-circle pe-0"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
+                        <li><a class="dropdown-item" href="/profile">Profile</a></li>
+                        <li>
+                            <form th:action="@{/logout}" method="post">
+                                <input type="submit" class="dropdown-item" value="Logout">
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
 
         <!-- Main sidebar -->
         <div class="sidebar p-4">
             <a class="navbar-brand fs-2 text-white" href="/dashboard">Inventory</a>
-            <ul class="navbar-nav pt-3">
-                <li class="nav-item">
-                    <i class="bi bi-grid"></i>
-                    <a class="nav-link" href="/dashboard">Dashboard</a>
-                </li>
-                <li class="nav-item">
-                    <i class="bi bi-box"></i>
-                    <a class="nav-link" href="/products">Products</a>
-                </li>
-                <li class="nav-item">
-                    <i class="bi bi-cart"></i>
-                    <a class="nav-link" href="/orders">Orders</a>
-                </li>
-            </ul>
+
+            <div class="d-flex justify-content-between flex-column h-100">
+                <ul class="navbar-nav pt-3">
+                    <li class="nav-item">
+                        <a class="nav-item-group" href="/dashboard">
+                            <i class="bi bi-grid"></i>
+                            <span class="nav-link">Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-item-group" href="/products">
+                            <i class="bi bi-box"></i>
+                            <span class="nav-link">Products</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-item-group" href="/categories">
+                            <i class="bi bi-folder"></i>
+                            <span class="nav-link">Categories</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-item-group" href="/orders">
+                            <i class="bi bi-cart"></i>
+                            <span class="nav-link">Orders</span>
+                        </a>
+                    </li>
+                </ul>
+
+                <div class="d-flex justify-content-center">
+                    <a class="nav-link" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                        <i class="bi bi-person-circle pe-0"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
+                        <li><a class="dropdown-item" href="/profile">Profile</a></li>
+                        <li>
+                            <form th:action="@{/logout}" method="post">
+                                <input type="submit" class="dropdown-item" value="Logout">
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
 
         <div class="main-content">
             <div class="content flex-grow-1 p-4 bg-body-tertiary">
-                <h2>Dashboard</h2>
+                <div class="d-flex gap-3 align-items-start">
+                    <button class="btn btn-outline-secondary offcanvasSidebarToggle" type="button"
+                        data-bs-toggle="offcanvas" data-bs-target="#offcanvasSidebar" aria-controls="offcanvasSidebar"
+                        id="sidebarToggle">
+                        <i class="bi bi-list"></i>
+                    </button>
+                    <h2>Dashboard</h2>
+                </div>
+
                 <div class="products-content border-0 pt-3">
                     <div class="d-flex flex-row gap-3 flex-wrap">
                         <div

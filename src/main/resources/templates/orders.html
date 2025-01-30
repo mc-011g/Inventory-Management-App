@@ -13,119 +13,144 @@
 
 <body>
     <div class="container-fluid p-0">
-        <nav class="navbar fixed-top navbar-expand bg-white">
-            <div class="container-fluid">
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav me-auto mb-lg-0 w-100 align-items-center justify-content-between">
-                        <li class="nav-item">
-                            <button class="btn btn-outline-secondary offcanvasSidebarToggle" type="button"
-                                data-bs-toggle="offcanvas" data-bs-target="#offcanvasSidebar"
-                                aria-controls="offcanvasSidebar" id="sidebarToggle">
-                                <i class="bi bi-list"></i>
-                            </button>
-                        </li>
-                        </li>
-                        <div sec:authorize="hasAuthority('ADMIN')">
-                            <li class="nav-item">
-                                <a class="nav-link" href="/users">Users</a>
-                            </li>
-                        </div>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown"
-                                aria-expanded="false">
-                                <i class="bi bi-person-circle fs-4"></i>
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
-                                <li><a class="dropdown-item" href="/profile">Profile</a></li>
-                                <li>
-                                    <form th:action="@{/logout}" method="post">
-                                        <input type="submit" class="dropdown-item" value="Logout">
-                                    </form>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
 
         <!-- Offcanvas sidebar -->
         <div class="sidebar offcanvasSidebar p-4 offcanvas offcanvas-start" tabindex="-1" id="offcanvasSidebar"
             aria-labelledby="offcanvasSidebarLabel">
-
             <div class="offcanvas-header">
                 <button type="button" class="btn-close text-white" data-bs-dismiss="offcanvas"
                     aria-label="Close"></button>
             </div>
-
             <a class="navbar-brand fs-2 text-white" href="/dashboard">Inventory</a>
+            <div class="d-flex justify-content-between flex-column h-100">
+                <ul class="navbar-nav pt-3">
+                    <li class="nav-item">
+                        <a class="nav-item-group" href="/dashboard">
+                            <i class="bi bi-grid"></i>
+                            <span class="nav-link">Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-item-group" href="/products">
+                            <i class="bi bi-box"></i>
+                            <span class="nav-link">Products</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-item-group" href="/categories">
+                            <i class="bi bi-folder"></i>
+                            <span class="nav-link">Categories</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-item-group" href="/orders">
+                            <i class="bi bi-cart"></i>
+                            <span class="nav-link">Orders</span>
+                        </a>
+                    </li>
+                </ul>
 
-            <ul class="offcanvas-body navbar-nav pt-3">
-                <li class="nav-item">
-                    <i class="bi bi-grid"></i>
-                    <a class="nav-link" href="/dashboard">Dashboard</a>
-                </li>
-                <li class="nav-item">
-                    <i class="bi bi-box"></i>
-                    <a class="nav-link" href="/products">Products</a>
-                </li>
-                <li class="nav-item">
-                    <i class="bi bi-cart"></i>
-                    <a class="nav-link" href="/orders">Orders</a>
-                </li>
-            </ul>
+                <div class="d-flex justify-content-center">
+                    <a class="nav-link" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                        <i class="bi bi-person-circle pe-0"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
+                        <li><a class="dropdown-item" href="/profile">Profile</a></li>
+                        <li>
+                            <form th:action="@{/logout}" method="post">
+                                <input type="submit" class="dropdown-item" value="Logout">
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
 
         <!-- Main sidebar -->
         <div class="sidebar p-4">
             <a class="navbar-brand fs-2 text-white" href="/dashboard">Inventory</a>
-
-            <ul class="navbar-nav pt-3">
-                <li class="nav-item">
-                    <i class="bi bi-grid"></i>
-                    <a class="nav-link" href="/dashboard">Dashboard</a>
-                </li>
-                <li class="nav-item">
-                    <i class="bi bi-box"></i>
-                    <a class="nav-link" href="/products">Products</a>
-                </li>
-                <li class="nav-item">
-                    <i class="bi bi-cart"></i>
-                    <a class="nav-link" href="/orders">Orders</a>
-                </li>
-            </ul>
+            <div class="d-flex justify-content-between flex-column h-100">
+                <ul class="navbar-nav pt-3">
+                    <li class="nav-item">
+                        <a class="nav-item-group" href="/dashboard">
+                            <i class="bi bi-grid"></i>
+                            <span class="nav-link">Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-item-group" href="/products">
+                            <i class="bi bi-box"></i>
+                            <span class="nav-link">Products</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-item-group" href="/categories">
+                            <i class="bi bi-folder"></i>
+                            <span class="nav-link">Categories</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-item-group" href="/orders">
+                            <i class="bi bi-cart"></i>
+                            <span class="nav-link">Orders</span>
+                        </a>
+                    </li>
+                </ul>
+                <div class="d-flex justify-content-center">
+                    <a class="nav-link" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                        <i class="bi bi-person-circle pe-0"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
+                        <li><a class="dropdown-item" href="/profile">Profile</a></li>
+                        <li>
+                            <form th:action="@{/logout}" method="post">
+                                <input type="submit" class="dropdown-item" value="Logout">
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
 
         <div class="main-content">
             <div class="content flex-grow-1 p-4 bg-body-tertiary">
-                <h2 class="pb-3"
-                    th:text="${searchResults} ? ('Search results for ' + ${searchQuery} + ' (' + ${searchResults.size()} + ')') : ('Orders' + ' (' + ${orders.size()} + ')')">
-                </h2>
+                <div class="d-flex gap-3 align-items-start">
+                    <button class="btn btn-outline-secondary offcanvasSidebarToggle" type="button"
+                        data-bs-toggle="offcanvas" data-bs-target="#offcanvasSidebar" aria-controls="offcanvasSidebar"
+                        id="sidebarToggle">
+                        <i class="bi bi-list"></i>
+                    </button>
+                    <h2 class="pb-3"
+                        th:text="${searchResults} ? ('Search results for ' + ${searchQuery} + ' (' + ${searchResults.size()} + ')') : ('Orders' + ' (' + ${orders.size()} + ')')">
+                    </h2>
+                </div>
+
                 <div class="orders-content bg-white rounded-4 p-4">
                     <div class="d-flex justify-content-between gap-3 align-items-center">
-                        <div>
-                            <label class="d-flex align-items-center my-3">
-                                Search by id:
+                        <div class="search-box">
+                            <div class="d-flex align-items-center">
                                 <form th:action="@{/orders}" method="post" class="d-flex">
-                                    <input type="text" class="ms-2 form-control" name="searchQuery" id="searchQuery">
-                                    <button type="submit" class="btn btn-primary ms-2" name="searchOrders">
+                                    <button type="submit" class="btn px-0" name="searchOrders">
                                         <i class="bi bi-search"></i>
                                     </button>
+                                    <input type="text" class="form-control" name="searchQuery" id="searchQuery"
+                                        placeholder="Search">
                                 </form>
-                            </label>
+                            </div>
                         </div>
-                        <button type="button" class="btn btn-primary addButton" data-bs-toggle="modal"
+
+                        <button type="button" class="btn btn-dark addButton" data-bs-toggle="modal"
                             data-bs-target="#addOrderModal" name="addOrderBtn" id="addOrderBtn">
-                            Create Order
-                            <i class="bi bi-plus fs-2"></i>
+                            <div>
+                                <span>+</span>
+                                <span>Create Order</span>
+                            </div>
                         </button>
                     </div>
-                    <div th:if="${orders.size() > 0}" class="table-responsive">
+
+                    <div th:if="${orders.size() > 0}" class="table-responsive mt-4">
                         <table class="table table-hover table-sm">
                             <thead>
                                 <tr>
@@ -140,12 +165,10 @@
                                     <th scope="col">Notes</th>
                                     <th scope="col">Created</th>
                                     <th scope="col">Updated</th>
-                                    <th scope="col">Actions</th>
+                                    <th scope="col">Action</th>
                                 </tr>
                             </thead>
-
                             <tbody>
-
                                 <tr th:each="order : ${searchResults == null ? orders : searchResults }">
                                     <td>
                                         <span th:text="${order.id}"></span>
@@ -195,14 +218,37 @@
                                         <span th:text="${order.updatedAt}"></span>
                                     </td>
                                     <td>
-                                        <button type="button" class="btn btn-outline-primary" th:onclick="                                        
-                                            getOrder([[${order}]])" data-bs-toggle="modal"
-                                            data-bs-target="#editOrderModal">Edit</button>
-                                    </td>
-                                    <td>
-                                        <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal"
-                                            th:onclick="getOrderId([[${order.id.toString()}]])"
-                                            data-bs-target="#deleteOrderModal">Delete</button>
+                                        <div class="dropstart">
+                                            <button class="btn" type="button" data-bs-toggle="dropdown"
+                                                aria-expanded="false">
+                                                <i class="bi bi-three-dots-vertical"></i>
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li>
+                                                    <button type="button" class="dropdown-item" th:onclick="                                        
+                                                    getOrder([[${order}]])" data-bs-toggle="modal"
+                                                        data-bs-target="#editOrderModal">
+                                                        Edit
+                                                    </button>
+                                                </li>
+                                                <li>
+                                                    <button type="button" class="dropdown-item"
+                                                        th:if="${order.status == 'Pending'}" data-bs-toggle="modal"
+                                                        th:onclick="getCancelOrderId([[${order.id.toString()}]])"
+                                                        data-bs-target="#cancelOrderModal">
+                                                        Cancel
+                                                    </button>
+                                                </li>
+                                                <li>
+                                                    <button type="button" class="dropdown-item text-danger"
+                                                        data-bs-toggle="modal"
+                                                        th:onclick="getOrderId([[${order.id.toString()}]])"
+                                                        data-bs-target="#deleteOrderModal">
+                                                        Delete
+                                                    </button>
+                                                </li>
+                                            </ul>
+                                        </div>
                                     </td>
                                 </tr>
                             </tbody>
@@ -313,7 +359,9 @@
                                             th:id="'hiddenPriceAddOrder' + ${product.id}" th:value="${product.price}">
                                     </div>
                                     <div class="text-danger" th:if="${#fields.hasErrors('orderItems')}"
-                                        th:errors="*{orderItems}">Products Error</div>
+                                        th:errors="*{orderItems}">
+                                        Products Error
+                                    </div>
                                 </div>
                             </div>
 
@@ -324,8 +372,9 @@
 
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary" name="createOrder">Create</button>
+                            <button type="button" class="btn btn-outline-secondary"
+                                data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-dark" name="createOrder">Create</button>
                         </div>
                     </form>
                 </div>
@@ -400,8 +449,9 @@
 
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary" name="editOrder"
+                            <button type="button" class="btn btn-outline-secondary"
+                                data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-dark" name="editOrder"
                                 id="saveChangesButton">Save</button>
                         </div>
                     </form>
@@ -424,13 +474,39 @@
                             <input hidden name="deleteOrderId" id="deleteOrderId">
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-outline-secondary"
+                                data-bs-dismiss="modal">Close</button>
                             <button type="submit" class="btn btn-danger" name="deleteOrder">Delete</button>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
+
+        <!-- Cancel Order Modal -->
+        <div class="modal fade" id="cancelOrderModal" tabindex="-1" aria-labelledby="cancelOrderModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="cancelOrderModalLabel">Cancel Order</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form th:action="@{/orders}" method="post">
+                        <div class="modal-body d-flex flex-column gap-3">
+                            Are you sure you want to cancel this order?
+                            <input hidden name="cancelOrderId" id="cancelOrderId">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-secondary"
+                                data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-dark" name="cancelOrder">Cancel Order</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -450,6 +526,15 @@
             switch (action) {
                 case 'addOrder':
                     toastMessage.innerText = "Added new order.";
+                    break;
+                case 'cancelOrder':
+                    toastMessage.innerText = "Cancelled order.";
+                    break;
+                case 'cancelOrderFailed':
+                    toastMessage.innerText = "Failed to cancel order.";
+                    break;
+                case 'noItemsInOrder':
+                    toastMessage.innerText = "Order failed, no items selected.";
                     break;
                 case 'editOrder':
                     toastMessage.innerText = "Saved order changes.";

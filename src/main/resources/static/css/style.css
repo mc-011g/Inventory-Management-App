@@ -5,16 +5,73 @@
     bottom: 0;
     width: 250px;
     overflow-y: auto;
+    display: flex;
+    flex-direction: column;
 }
 
-.sidebar .nav-item {
+.main-content {
+    height: 100vh;
+}
+
+.nav-link .bi-person-circle {
+    color: rgb(172, 172, 179);
+    font-size: 2.5rem !important;
+}
+
+.profileImage {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.profileImage .bi-person-circle {
+    color: rgb(172, 172, 179);
+    font-size: 6.5rem !important;
+}
+
+.nav-link .bi-person-circle:hover {
+    color: white;
+}
+
+.navbar-nav .nav-item {
     color: rgb(172, 172, 179);
     display: flex;
     cursor: pointer;
     align-items: center;
+    padding-left: 0.5rem;
+    border-radius: 16px;
 }
 
-.sidebar .bi {
+.sidebar .nav-item:hover {
+    background-color: #31353c;
+}
+
+.offcanvas-body {
+    padding: none !important;
+}
+
+.sidebar .nav-link:hover {
+    color: white;
+}
+
+.sidebar .nav-link {
+    transition: none;
+}
+
+.navbar-brand {
+    padding-left: 0.5rem;
+}
+
+.nav-item-group {
+    display: inline-flex;
+    align-items: center;
+    width: 100%;
+    color: inherit;
+    text-decoration: none;
+}
+
+.sidebar .bi,
+.navbar-brand {
     padding-right: 0.5rem;
 }
 
@@ -63,7 +120,7 @@
 }
 
 .sidebar {
-    width: 250px !important;
+    width: 220px !important;
 }
 
 .offcanvasSidebar {
@@ -73,21 +130,15 @@
 .content {
     display: flex;
     flex-direction: column;
-    margin-left: 250px;
-    margin-top: 68px;
+    margin-left: 220px;
     padding-top: 1rem;
-    height: calc(100vh - 68px);
+    height: 100%;
+
 }
 
-.products-content {
-    flex-grow: 1;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    border: 1px solid #e6e6e6;
-}
-
-.orders-content {
+.products-content,
+.orders-content,
+.categories-content {
     flex-grow: 1;
     overflow-y: auto;
     display: flex;
@@ -99,6 +150,46 @@
     display: none;
 }
 
+.dropdown-menu {
+    z-index: 1050;
+}
+
+.btn-dark {
+    background-color: #181a1d;
+    border-color: #181a1d;
+}
+
+.btn-outline-dark {
+    border-color: #181a1d;
+    color: #181a1d;
+}
+
+.btn {
+    border-radius: 16px !important;
+}
+
+.dropdown-item:focus {
+    background-color: inherit !important;
+    color: inherit;
+}
+
+.search-box {
+    background-color: #ebebeb;
+    border-radius: 16px;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+.search-box .form-control {
+    background: none !important;
+    border: none !important;
+}
+
+.search-box .form-control:focus {
+    outline: none;
+    box-shadow: none;
+    border-color: transparent;
+}
 
 @media (max-width: 1130px) {
     .sidebar {
@@ -106,7 +197,7 @@
     }
 
     .offcanvasSidebar {
-        display: block;
+        display: flex;
     }
 
     .navbar {

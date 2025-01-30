@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <title>Inventory - Products</title>
+    <title>Inventory - Categories</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -125,16 +125,16 @@
                         <i class="bi bi-list"></i>
                     </button>
                     <h2 class="pb-3"
-                        th:text="${searchResults} ? ('Search results for ' + ${searchQuery} + ' (' + ${searchResults.size()} + ')') : ('Products' + ' (' + ${products.size()} + ')')">
+                        th:text="${searchResults} ? ('Search results for ' + ${searchQuery} + ' (' + ${searchResults.size()} + ')') : ('Categories' + ' (' + ${categories.size()} + ')')">
                     </h2>
                 </div>
 
-                <div class="products-content bg-white rounded-4 p-4">
+                <div class="categories-content bg-white rounded-4 p-4">
                     <div class="d-flex justify-content-between gap-3 align-items-center">
                         <div class="search-box">
                             <div class="d-flex align-items-center">
-                                <form th:action="@{/products}" method="post" class="d-flex">
-                                    <button type="submit" class="btn px-0" name="searchProducts">
+                                <form th:action="@{/categories}" method="post" class="d-flex">
+                                    <button type="submit" class="btn px-0" name="searchCategories">
                                         <i class="bi bi-search"></i>
                                     </button>
                                     <input type="text" class="form-control" name="searchQuery" id="searchQuery"
@@ -144,62 +144,43 @@
                         </div>
 
                         <button type="button" class="btn btn-dark addButton" data-bs-toggle="modal"
-                            data-bs-target="#addProductModal" name="addProductBtn" id="addProductBtn">
+                            data-bs-target="#addCategoryModal" name="addCategoryBtn" id="addCategoryBtn">
                             <div>
                                 <span>+</span>
-                                <span>Create Product</span>
+                                <span>Create Category</span>
                             </div>
                         </button>
                     </div>
 
-                    <div th:if="${products}" class="table-responsive mt-4">
+                    <div th:if="${categories.size() > 0}" class="table-responsive mt-4">
                         <table class="table table-hover table-sm">
                             <thead>
                                 <tr>
                                     <th scope="col">ID</th>
-                                    <th scope="col">Image</th>
                                     <th scope="col">Name</th>
-                                    <th scope="col">Price</th>
-                                    <th scope="col">Category</th>
-                                    <th scope="col">Quantity</th>
-                                    <th scope="col">SKU</th>
-                                    <th scope="col">Dated Added</th>
-                                    <th scope="col">Last Updated</th>
+                                    <th scope="col">Description</th>
+                                    <th scope="col">Created</th>
+                                    <th scope="col">Updated</th>
                                     <th scope="col">Action</th>
                                 </tr>
                             </thead>
+
                             <tbody>
-                                <tr th:each="product : ${searchResults == null ? products : searchResults }">
+                                <tr th:each="category : ${searchResults == null ? categories : searchResults }">
                                     <td>
-                                        <span th:text="${product.id}"></span>
+                                        <span th:text="${category.id}"></span>
                                     </td>
                                     <td>
-                                        <div class="orderProductImage">
-                                            <i class="bi bi-image d-flex orderProductIcon"></i>
-                                        </div>
+                                        <span th:text="${category.name}"></span>
                                     </td>
                                     <td>
-                                        <span th:text="${product.name}"></span>
+                                        <span th:text="${category.description}"></span>
                                     </td>
                                     <td>
-                                        <span th:text="'$' + ${product.price}"></span>
+                                        <span th:text="${category.createdAt}"></span>
                                     </td>
                                     <td>
-                                        <span th:each="category : ${categories}"
-                                            th:if="${category.id == product.categoryId}" th:text="${category.name}">
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <span th:text="${product.quantity}"></span>
-                                    </td>
-                                    <td>
-                                        <span th:text="${product.SKU}"></span>
-                                    </td>
-                                    <td>
-                                        <span th:text="${product.createdAt}"></span>
-                                    </td>
-                                    <td>
-                                        <span th:text="${product.updatedAt}"></span>
+                                        <span th:text="${category.updatedAt}"></span>
                                     </td>
 
                                     <td>
@@ -210,17 +191,17 @@
                                             </button>
                                             <ul class="dropdown-menu">
                                                 <li>
-                                                    <button type="button" class="dropdown-item"
-                                                        th:onclick="getProduct([[${product}]], [[${product.id.toString()}]])"
-                                                        data-bs-toggle="modal" data-bs-target="#editProductModal">
+                                                    <button type="button" class="dropdown-item" th:onclick="                                        
+                                                        getCategory([[${category}]])" data-bs-toggle="modal"
+                                                        data-bs-target="#editCategoryModal">
                                                         Edit
                                                     </button>
                                                 </li>
                                                 <li>
                                                     <button type="button" class="dropdown-item text-danger"
                                                         data-bs-toggle="modal"
-                                                        th:onclick="getProductId([[${product.id.toString()}]])"
-                                                        data-bs-target="#deleteProductModal">
+                                                        th:onclick="getCategoryId([[${category.id.toString()}]])"
+                                                        data-bs-target="#deleteCategoryModal">
                                                         Delete
                                                     </button>
                                                 </li>
@@ -231,8 +212,9 @@
                             </tbody>
                         </table>
                     </div>
-                    <div th:if="${products == null}" class="text-center align-content-center h-100">
-                        <h3 class="text-secondary">No products found.</h3>
+
+                    <div th:if="${categories.size() == 0}" class="text-center h-100 align-content-center">
+                        <h3 class="text-secondary">No categories found.</h3>
                     </div>
                 </div>
             </div>
@@ -249,66 +231,39 @@
             </div>
         </div>
 
-        <!-- Add Product Modal -->
-        <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel"
+        <!-- Add Category Modal -->
+        <div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="addCategoryModalLabel"
             aria-hidden="true" th:classappend="${showAddModal} ? 'show' : ''">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="addProductModalLabel">Create Product</h1>
+                        <h1 class="modal-title fs-5" id="addCategoryModalLabel">Create Category</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
 
-                    <form th:action="@{/products}" th:object="${newProduct}" method="post">
+                    <form th:action="@{/categories}" th:object="${newCategory}" method="post">
                         <div class="modal-body d-flex flex-column gap-3">
                             <div class="form-group">
-                                <label for="newProductName">Name</label>
-                                <input type="text" class="form-control" name="newProductName" th:field="*{name}"
-                                    id="newProductName" maxlength="100">
+                                <label for="newCategoryName">Name</label>
+                                <input type="text" class="form-control" name="newCategoryName" th:field="*{name}"
+                                    id="newCategoryName" required maxlength="50">
                                 <div class="text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name
-                                    Error</div>
-                            </div>
-                            <div class="form-group">
-                                <label for="newProductPrice">Price</label>
-                                <input type="number" step="1" class="form-control" name="newProductPrice"
-                                    th:field="*{price}" id="newProductPrice" required>
-                                <div class="text-danger" th:if="${#fields.hasErrors('price')}" th:errors="*{price}">
-                                    Price Error
+                                    Error
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="newProductCategory">Category</label>
-                                <select class="form-select" name="newProductCategory" th:field="*{categoryId}"
-                                    aria-label="Select Category">
-                                    <option th:if="${categories != null}" th:value="${'None'}" th:text="${'None'}">
-                                    </option>
-                                    <option th:if="${categories}" th:each="category : ${categories}"
-                                        th:value="${category.id}" th:text="${category.name}">
-                                    </option>
-                                </select>
-                                <div class="text-danger" th:if="${#fields.hasErrors('categoryId')}"
-                                    th:errors="*{categoryId}">Category Error</div>
-                            </div>
-                            <div class="form-group">
-                                <label for="newProductQuantity" class="w-100">
-                                    Quantity
-                                    <input type="number" class="form-control" name="newProductQuantity"
-                                        th:field="*{quantity}" id="newProductQuantity" required>
-                                    <div class="text-danger" th:if="${#fields.hasErrors('quantity')}"
-                                        th:errors="*{quantity}">Quantity Error</div>
-                            </div>
-                            <div class="form-group">
-                                <label for="newProductSKU">SKU</label>
-                                <input type="text" class="form-control" name="newProductSKU" th:field="*{SKU}"
-                                    id="newProductSKU" required maxlength="100">
-                                <div class="text-danger" th:if="${#fields.hasErrors('SKU')}" th:errors="*{SKU}">SKU
-                                    Error</div>
+                                <label for="newCategoryDescription">Description</label>
+                                <input type="text" class="form-control" name="newCategoryDescription"
+                                    th:field="*{description}" id="newCategoryDescription" maxlength="200">
+                                <div class="text-danger" th:if="${#fields.hasErrors('description')}"
+                                    th:errors="*{description}">Description
+                                    Error
+                                </div>
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-outline-secondary"
-                                data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-dark" name="createProduct">Create</button>
+                            <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-dark" name="createCategory">Create</button>
                         </div>
                     </form>
 
@@ -316,65 +271,41 @@
             </div>
         </div>
 
-        <!-- Edit Product Modal -->
-        <div class="modal fade" id="editProductModal" tabindex="-1" aria-labelledby="editProductModalLabel"
+        <!-- Edit Category Modal -->
+        <div class="modal fade" id="editCategoryModal" tabindex="-1" aria-labelledby="editCategoryModalLabel"
             aria-hidden="true" th:classappend="${showEditModal} ? 'show' : ''">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="editProductModalLabel">Edit Product</h1>
+                        <h1 class="modal-title fs-5" id="editCategoryModalLabel">Edit Category</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
 
-                    <form th:action="@{/editProduct}" th:object="${editedProduct}" method="post">
+                    <form id="editCategoryForm" th:action="@{/categories}" th:object="${editedCategory}" method="post">
                         <div class="modal-body d-flex flex-column gap-3">
-                            <input type="hidden" th:field="*{id}" id="editProductId" />
-                            <input type="hidden" th:field="*{userId}" id="editProductUserId" />
-                            <input type="hidden" th:field="*{images}" id="editProductImages" />
-                            <input type="hidden" th:field="*{createdAt}" id="editProductCreatedAt" />
+                            <input type="hidden" th:field="*{id}" id="editCategoryId" />
+
                             <div class="form-group">
-                                <label for="editProductName">Name</label>
-                                <input type="text" class="form-control" name="editProductName" id="editProductName"
-                                    th:field="*{name}" required maxlength="100">
+                                <label for="editCategoryName">Name</label>
+                                <input type="text" class="form-control" name="editCategoryName" id="editCategoryName"
+                                    th:field="*{name}" maxlength="50" required>
                                 <div class="text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name
                                     Error</div>
                             </div>
+
                             <div class="form-group">
-                                <label for="editProductPrice">Price</label>
-                                <input type="number" step="1" class="form-control" name="editProductPrice"
-                                    id="editProductPrice" th:field="*{price}" required>
-                                <div class="text-danger" th:if="${#fields.hasErrors('price')}" th:errors="*{price}">
-                                    Price
-                                    Error</div>
-                            </div>
-                            <div class="form-group">
-                                <label for="editProductCategory">Category</label>
-                                <select class="form-select" name="editProductCategory" id="editProductCategory"
-                                    th:field="*{categoryId}" aria-label="Select Category">
-                                    <option th:if="${categories}" th:value="${'None'}" th:text="${'None'}">
-                                    <option th:each="category : ${categories}" th:value="${category.id}"
-                                        th:text="${category.name}"></option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="editProductQuantity">Quantity</label>
-                                <input type="number" class="form-control" name="editProductQuantity"
-                                    id="editProductQuantity" th:field="*{quantity}" required>
-                                <div class="text-danger" th:if="${#fields.hasErrors('quantity')}"
-                                    th:errors="*{quantity}">Price Error</div>
-                            </div>
-                            <div class="form-group">
-                                <label for="editProductSKU">SKU</label>
-                                <input type="text" class="form-control" name="editProductSKU" id="editProductSKU"
-                                    th:field="*{SKU}" required maxlength="100">
-                                <div class="text-danger" th:if="${#fields.hasErrors('SKU')}" th:errors="*{SKU}">Price
-                                    Error</div>
+                                <label for="editCategoryDescription">Description</label>
+                                <input type="text" class="form-control" name="editCategoryDescription"
+                                    id="editCategoryDescription" th:field="*{description}" maxlength="200">
+                                <div class="text-danger" th:if="${#fields.hasErrors('description')}"
+                                    th:errors="*{description}">Description
+                                    Error
+                                </div>
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-outline-secondary"
-                                data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-dark" name="editProduct"
+                            <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-dark" name="editCategory"
                                 id="saveChangesButton">Save</button>
                         </div>
                     </form>
@@ -382,24 +313,23 @@
             </div>
         </div>
 
-        <!-- Delete Product Modal -->
-        <div class="modal fade" id="deleteProductModal" tabindex="-1" aria-labelledby="deleteProductModalLabel"
+        <!-- Delete Category Modal -->
+        <div class="modal fade" id="deleteCategoryModal" tabindex="-1" aria-labelledby="deleteCategoryModalLabel"
             aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="editProductModalLabel">Delete Product</h1>
+                        <h1 class="modal-title fs-5" id="deleteCategoryModalLabel">Delete Category</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <form th:action="@{/products}" method="post">
+                    <form th:action="@{/categories}" method="post">
                         <div class="modal-body d-flex flex-column gap-3">
-                            Are you sure you want to delete this product?
-                            <input hidden name="deleteProductId" id="deleteProductId">
+                            Are you sure you want to delete this category?
+                            <input hidden name="deleteCategoryId" id="deleteCategoryId">
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-outline-secondary"
-                                data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-danger" name="deleteProduct">Delete</button>
+                            <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-danger" name="deleteCategory">Delete</button>
                         </div>
                     </form>
                 </div>
@@ -422,17 +352,20 @@
         let action = /*[[${message}]]*/ '';
         if (action !== null) {
             switch (action) {
-                case 'addProduct':
-                    toastMessage.innerText = "Added new product.";
+                case 'addCategory':
+                    toastMessage.innerText = "Added new category.";
                     break;
-                case 'editProduct':
-                    toastMessage.innerText = "Saved product changes.";
+                case 'noItemsInCategory':
+                    toastMessage.innerText = "Could not create category.";
                     break;
-                case 'deleteProduct':
-                    toastMessage.innerText = "Deleted product.";
+                case 'editCategory':
+                    toastMessage.innerText = "Saved category changes.";
                     break;
-                case 'existingProduct':
-                    toastMessage.innerText = "Product already exists.";
+                case 'deleteCategory':
+                    toastMessage.innerText = "Deleted category.";
+                    break;
+                case 'existingCategory':
+                    toastMessage.innerText = "Category already exists.";
                     break;
                 default:
                     break;
