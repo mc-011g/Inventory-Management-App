@@ -15,17 +15,13 @@ jobs:
     permissions:
       contents: read #This is required for actions/checkout
 
-    env:
-      ATLAS_URI: ${{ secrets.ATLAS_URI }}
-      DB_NAME: ${{ secrets.DB_NAME }}
-
     steps:
       - uses: actions/checkout@v4
 
       - name: Set up Java version
         uses: actions/setup-java@v4
         with:
-          java-version: '17'
+          java-version: 'java21'
           distribution: 'microsoft'
 
       - name: Build with Maven
@@ -56,9 +52,9 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_88B33AA62A974F14B8A395B5EE3F4D6F }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_6D9FCB9E677641FBABABC69DE0C7740C }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_9FFEEF7E5D614AE89F7FCF57282C4981 }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_34656BBA75694182ADD584BBBCBCE714 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_77084BD02BC84677BEE51D9FB27CD058 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_BB377CD8E4964A2DB52C57766A063EDD }}
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
