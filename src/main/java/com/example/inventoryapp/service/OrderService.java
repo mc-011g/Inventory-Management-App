@@ -5,6 +5,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Optional;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
@@ -15,6 +16,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import com.example.inventoryapp.dto.OrderItemCategorySales;
+import com.example.inventoryapp.model.Category;
 import com.example.inventoryapp.model.Order;
 import com.example.inventoryapp.model.OrderItem;
 import com.example.inventoryapp.model.Product;
@@ -30,6 +33,9 @@ public class OrderService {
 
     @Autowired
     ProductRepository productRepository;
+
+    @Autowired
+    CategoryService categoryService;
 
     public List<Order> getAllOrders() {
         return orderRepository.findAll();
@@ -86,6 +92,49 @@ public class OrderService {
             }
         }
 
+    }
+
+    public List<OrderItemCategorySales> getTopCategorySales(String id) {
+        List<Order> orders = getUserOrders(id);
+        List<OrderItemCategorySales> orderItemCategorySalesList = new ArrayList<>();
+
+        for (Order order : orders) {
+            if (order.getStatus().equals("Processed")) {
+                for (OrderItem orderItem : order.getOrderItems()) {
+
+                    if (orderItem.getProduct().getCategoryId() != null) {
+                        Category category = categoryService.getCategory(orderItem.getProduct().getCategoryId());
+
+                        if (category != null) {
+                            double salesValue = orderItem.getProduct().getPrice() * orderItem.getQuantity();
+                            orderItemCategorySalesList.add(new OrderItemCategorySales(category.getName(), salesValue));
+                        }
+                    }
+                }
+            }
+        }
+
+        List<OrderItemCategorySales> topCategorySales = new ArrayList<>();
+
+        // Add up all sales of each element in the list for each category
+        // Have an accumulated OrderItemCategorySales element for each category
+        for (OrderItemCategorySales orderItemCategorySales : orderItemCategorySalesList) {
+
+            Optional<OrderItemCategorySales> existingOrderItemCategorySales = topCategorySales.stream()
+                    .filter(o -> o.getCategory().equals(orderItemCategorySales.getCategory())).findFirst();
+
+            if (existingOrderItemCategorySales.isPresent()) {
+                OrderItemCategorySales filteredOrderItemCategorySales = existingOrderItemCategorySales.get();
+
+                filteredOrderItemCategorySales.setSalesValue(
+                        filteredOrderItemCategorySales.getSalesValue() + orderItemCategorySales.getSalesValue());
+            } else {
+                topCategorySales.add(new OrderItemCategorySales(orderItemCategorySales.getCategory(),
+                        orderItemCategorySales.getSalesValue()));
+            }
+        }
+
+        return topCategorySales;
     }
 
     public String getTotalSalesValue(String userId) {

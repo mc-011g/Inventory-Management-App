@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import com.example.inventoryapp.dto.OrderItemCategorySales;
 import com.example.inventoryapp.model.Order;
 import com.example.inventoryapp.model.Product;
 import com.example.inventoryapp.model.User;
@@ -42,7 +43,16 @@ public class DashboardController {
         }
 
         List<Product> products = productService.getUserProducts(userId);
+        List<OrderItemCategorySales> topCategorySales = orderService.getTopCategorySales(userId);
+        List<OrderItemCategorySales> topFiveCategorySales;
 
+        if (topCategorySales.size() > 5) {
+            topFiveCategorySales = topCategorySales.subList(0, 5);
+        } else {
+            topFiveCategorySales = topCategorySales;
+        }
+
+        model.addAttribute("topFiveCategorySales", topFiveCategorySales);
         model.addAttribute("orders", shortenedOrders);
         model.addAttribute("products", products);
         model.addAttribute("totalSales", orderService.getTotalSalesValue(userId));

@@ -127,49 +127,96 @@
                     <h2>Dashboard</h2>
                 </div>
 
-                <div class="products-content border-0 pt-3">
+                <div class="products-content border-0 pt-3 gap-3">
                     <div class="d-flex flex-row gap-3 flex-wrap">
                         <div
                             class="dashboard-section d-flex flex-grow-1 justify-content-between gap-3 align-items-center">
                             <div>
-                                <div class="text-secondary mb-1">Total Unique Products</div>
+                                <div class="text-secondary mb-2">Total Unique Products</div>
                                 <h2 th:text="${products.size()}">123</h2>
                             </div>
                         </div>
                         <div
                             class="dashboard-section d-flex flex-grow-1 justify-content-between gap-3 align-items-center">
                             <div>
-                                <div class="text-secondary mb-1">Total Stock</div>
+                                <div class="text-secondary mb-2">Total Stock</div>
                                 <h2 th:text="${totalStock} ? ${totalStock} : 'None' ">123</h2>
                             </div>
                         </div>
                         <div
                             class="dashboard-section d-flex flex-grow-1 justify-content-between gap-3 align-items-center">
                             <div>
-                                <div class="text-secondary mb-1">Total Sales</div>
+                                <div class="text-secondary mb-2">Total Sales</div>
                                 <h2 th:text="'$' + ${totalSales}">$123.00</h2>
                             </div>
                         </div>
+                    </div>
+
+                    <div class="d-flex flex-row gap-3 flex-wrap">
+                        <div class="dashboard-section d-flex flex-grow-1">
+
+                            <div class="graph-metric-container">
+                                <div class="text-secondary mb-2">Top Category Sales</div>
+
+                                <div th:if="${topFiveCategorySales.size() == 0}">
+                                    <h2 class="text-secondary">None</h2>
+                                </div>
+
+                                <div th:if="${topFiveCategorySales.size() > 0}" class="topCategorySalesGraph"
+                                    id="topCategorySalesGraph">
+
+                                    <div class="metric-bar-y-axis">
+                                        <div class="metric-bar-y-axis-item">$5000</div>
+                                        <div class="metric-bar-y-axis-item">$4000</div>
+                                        <div class="metric-bar-y-axis-item">$3000</div>
+                                        <div class="metric-bar-y-axis-item">$2000</div>
+                                        <div class="metric-bar-y-axis-item">$1000</div>
+                                        <div class="metric-bar-y-axis-item">$0</div>
+                                    </div>
+
+                                    <div class="d-flex flex-column" style="padding-left: 1.4rem;">
+                                        <div class="metric-bar-element-group">
+                                            <div class="metric-bar-element"
+                                                th:each="categorySalesItem : ${topFiveCategorySales}">
+                                                <div class="metric-bar" th:id="${categorySalesItem.category + 'Metric'}"
+                                                    th:data-value="${#numbers.formatInteger(categorySalesItem.salesValue, 0)}">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div th:if="${topFiveCategorySales.size() > 0}" class="metric-bar-x-axis">
+                                            <div th:each="categorySalesItem : ${topFiveCategorySales}"
+                                                class="metric-bar-x-axis-item">
+                                                <div th:text="${categorySalesItem.category}"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <div
-                            class="dashboard-section d-flex flex-grow-1 justify-content-between gap-3 align-items-center">
-                            <div>
-                                <div class="text-secondary mb-1">Low Stock Products</div>
+                            class="dashboard-section d-flex flex-grow-1 justify-content-between gap-3 align-items-start">
+                            <div class="w-100 h-100">
+                                <div class="text-secondary mb-2">Low Stock Products</div>
                                 <ul th:if="${lowStockProducts.size() > 0}">
                                     <li th:each="product : ${lowStockProducts}">
                                         <span th:text="${product.name + ', Qty: ' + product.quantity}"></span>
                                     </li>
                                 </ul>
                                 <div th:if="${lowStockProducts.size() == 0}">
-                                    <h2>None</h2>
+                                    <h2 class="text-secondary">None</h2>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="d-flex flex-column flex-grow-1 gap-3 mt-3">
-                        <div class="dashboard-section d-flex h-100 justify-content-between gap-3 align-items-center">
+
+                    <div class="dashboard-section d-flex flex-grow-1">
+                        <div class="d-flex flex-column flex-grow-1">
                             <div class="d-flex flex-column h-100 w-100">
-                                <div class="text-secondary mb-1">Recent Orders</div>
+                                <div class="text-secondary mb-2">Recent Orders</div>
+
                                 <div th:if="${orders.size() > 0}" class="table-responsive">
                                     <table class="table table-hover table-sm">
                                         <thead>
@@ -207,49 +254,50 @@
 
                                     </table>
                                 </div>
-                                <div th:if="${orders.size() == 0}" class="text-center align-content-center h-100">
-                                    <h2 class="text-secondary" style="margin-bottom: 28px;">No orders found.</h2>
+
+                                <div th:if="${orders.size() == 0}">
+                                    <h2 class="text-secondary">None</h2>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-                integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-                crossorigin="anonymous">
-                </script>
-            <script type="text/javascript" th:src="@{/js/script.js}"></script>
-
-            <script th:inline="javascript">
-                const toastTrigger = document.getElementById('liveToastBtn');
-                const toastLiveExample = document.getElementById('liveToast');
-                const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample);
-                const toastMessage = document.getElementById("toast-message");
-
-                let action = /*[[${message}]]*/ '';
-                if (action !== null) {
-                    switch (action) {
-                        case 'addProduct':
-                            toastMessage.innerText = "Added new product.";
-                            break;
-                        case 'editProduct':
-                            toastMessage.innerText = "Saved product changes.";
-                            break;
-                        case 'deleteProduct':
-                            toastMessage.innerText = "Deleted product.";
-                            break;
-                        case 'existingProduct':
-                            toastMessage.innerText = "Product already exists.";
-                            break;
-                        default:
-                            break;
-                    }
-                    toastBootstrap.show()
-                }
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
             </script>
+        <script type="text/javascript" th:src="@{/js/script.js}"></script>
+
+        <script th:inline="javascript">
+            const toastTrigger = document.getElementById('liveToastBtn');
+            const toastLiveExample = document.getElementById('liveToast');
+            const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample);
+            const toastMessage = document.getElementById("toast-message");
+
+            let action = /*[[${message}]]*/ '';
+            if (action !== null) {
+                switch (action) {
+                    case 'addProduct':
+                        toastMessage.innerText = "Added new product.";
+                        break;
+                    case 'editProduct':
+                        toastMessage.innerText = "Saved product changes.";
+                        break;
+                    case 'deleteProduct':
+                        toastMessage.innerText = "Deleted product.";
+                        break;
+                    case 'existingProduct':
+                        toastMessage.innerText = "Product already exists.";
+                        break;
+                    default:
+                        break;
+                }
+                toastBootstrap.show()
+            }
+        </script>
 </body>
 
 </html>

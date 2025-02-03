@@ -152,7 +152,7 @@
                         </button>
                     </div>
 
-                    <div th:if="${products}" class="table-responsive mt-4">
+                    <div th:if="${products.size() > 0}" class="table-responsive mt-4">
                         <table class="table table-hover table-sm">
                             <thead>
                                 <tr>
@@ -231,9 +231,11 @@
                             </tbody>
                         </table>
                     </div>
-                    <div th:if="${products == null}" class="text-center align-content-center h-100">
+
+                    <div th:if="${products.size() == 0}" class="text-center align-content-center h-100">
                         <h3 class="text-secondary">No products found.</h3>
                     </div>
+
                 </div>
             </div>
         </div>

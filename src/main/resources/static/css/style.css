@@ -106,7 +106,60 @@
     padding: 1.5rem;
     border-radius: 1rem;
     flex-grow: 1;
-    overflow-y: auto;
+}
+
+.metric-bar-element-group {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    padding-top: 1.4rem;
+    height: 100%;
+}
+
+.metric-bar-x-axis {
+    display: flex;
+    flex-direction: row;
+    margin-top: 1rem;
+    gap: 1rem;
+}
+
+.metric-bar-y-axis {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-width: 4rem;
+    margin-top: 0.6rem;
+    padding-bottom: 40px;
+}
+
+.metric-bar-x-axis-item {
+    min-width: 5.5rem;
+    text-align: center;
+}
+
+.metric-bar-element {
+    align-content: end;
+}
+
+.metric-bar {
+    height: calc(200px - 15px);
+    background-color: #57a860;
+    width: 5.5rem;
+}
+
+.graph-metric-container {
+    display: flex;
+    flex-direction: column;
+    height: 400px;
+    width: 100%;
+}
+
+.topCategorySalesGraph {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    height: 100vh;
 }
 
 .addButton {
