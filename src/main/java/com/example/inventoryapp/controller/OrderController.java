@@ -222,10 +222,11 @@ public class OrderController {
 
         redirectAttributes.addFlashAttribute("message", "editOrder");
 
+        Order originalOrder = orderService.getOrder(editedOrder.getId());
         if (editedOrder.getStatus().equals("Pending")) {
 
             // Update order items and their products
-            Order originalOrder = orderService.getOrder(editedOrder.getId());
+            // Order originalOrder = orderService.getOrder(editedOrder.getId());
             List<OrderItem> editedOrderItems = editedOrder.getOrderItems();
             List<OrderItem> orginalOrderItems = originalOrder.getOrderItems();
 
@@ -270,9 +271,13 @@ public class OrderController {
                 }
             }
 
-            editedOrder.setOrderItems(selectedOrderItems);
-            orderService.updateOrder(editedOrder);
+            editedOrder.setOrderItems(selectedOrderItems); 
+        } else {
+            editedOrder.setOrderItems(originalOrder.getOrderItems());
+            editedOrder.setTotalPrice(originalOrder.getTotalPrice());
         }
+
+        orderService.updateOrder(editedOrder);
 
         return "redirect:/orders";
     }

@@ -10,7 +10,7 @@
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 
-<body>
+<body th:data-action="${message}">
 
     <!-- Offcanvas sidebar -->
     <div class="sidebar offcanvasSidebar p-4 offcanvas offcanvas-start" tabindex="-1" id="offcanvasSidebar"
@@ -243,24 +243,9 @@
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script type="text/javascript" th:src="@{/js/script.js}"></script>
+    <script type="text/javascript" th:src="@{/js/profile.js}"></script>
+    <script type="text/javascript" th:src="@{/js/password-visibility.js}"></script>
 
-    <script th:inline="javascript">
-        let action = /*[[${message}]]*/ '';
-
-        const toastTrigger = document.getElementById('liveToastBtn');
-        const toastLiveExample = document.getElementById('liveToast');
-        const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample);
-        const toastMessage = document.getElementById("toast-message");
-
-        if (action !== null) {
-            if (action === 'saveProfile') {
-                toastMessage.innerText = "Saved profile.";
-            }
-            toastBootstrap.show()
-        }
-
-    </script>
 </body>
 
 </html>
