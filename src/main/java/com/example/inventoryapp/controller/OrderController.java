@@ -225,8 +225,7 @@ public class OrderController {
         Order originalOrder = orderService.getOrder(editedOrder.getId());
         if (editedOrder.getStatus().equals("Pending")) {
 
-            // Update order items and their products
-            // Order originalOrder = orderService.getOrder(editedOrder.getId());
+            // Update order items and their products        
             List<OrderItem> editedOrderItems = editedOrder.getOrderItems();
             List<OrderItem> orginalOrderItems = originalOrder.getOrderItems();
 

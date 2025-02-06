@@ -193,18 +193,23 @@
                                     </td>
                                     <td>
                                         <div th:each="orderItem, iterStat : ${order.orderItems}" class="">
-                                            <div class="d-flex justify-content-between mb-1">
-                                                <div class="d-flex flex-row">
+                                            <div class="d-flex justify-content-between mb-1 flex-grow-1">
+                                                <div class="d-flex flex-row flex-grow-1">
                                                     <div class="orderProductImage">
                                                         <i class="bi bi-image d-flex orderProductIcon"></i>
                                                     </div>
-                                                    <div class="ms-2 me-5" style="min-width: 100px;">
-                                                        <div th:text="${orderItem.product.name}" class=""
-                                                            id="orderItemName"></div>
-                                                        <div th:text="'Qty: ' + ${orderItem.quantity}"
-                                                            id="orderItemQuantity"></div>
+
+                                                    <div class="d-flex flex-row justify-content-between flex-grow-1">
+                                                        <div class="ms-2 me-4" style="min-width: 100px;">
+                                                            <div th:text="${orderItem.product.name}" class=""
+                                                                id="orderItemName"></div>
+                                                            <div th:text="'Qty: ' + ${orderItem.quantity}"
+                                                                id="orderItemQuantity"></div>
+                                                        </div>
+                                                        <span class=""
+                                                            th:text="'$' + ${orderItem.product.price}"></span>
                                                     </div>
-                                                    <span class="" th:text="'$' + ${orderItem.product.price}"></span>
+
                                                 </div>
                                             </div>
                                     </td>
